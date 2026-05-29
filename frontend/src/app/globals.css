@@ -1044,6 +1044,16 @@ body {
   gap: 0.5rem;
   margin-bottom: 1.2rem;
   flex-wrap: wrap;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.global-filters::-webkit-scrollbar {
+  height: 4px;
+}
+.global-filters::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 4px;
 }
 
 .global-filters__label {
@@ -1259,7 +1269,33 @@ body {
 }
 
 /* ============================================================
-   8. BANNER DE ERROR
+   8. LAYOUT DASHBOARD (RESPONSIVE)
+   ============================================================ */
+.dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1rem;
+}
+
+.dashboard-grid-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+  align-items: stretch;
+}
+
+.dashboard-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  align-items: stretch;
+}
+
+/* ============================================================
+   9. BANNER DE ERROR
    ============================================================ */
 .mtp-error-banner {
   display: flex;
@@ -1274,7 +1310,119 @@ body {
 }
 
 /* ============================================================
-   9. RESPONSIVE
+   9. UX MÓVIL (MODALES Y APP NATIVA)
+   ============================================================ */
+.mobile-menu-overlay {
+  display: none;
+}
+.mobile-filter-sheet {
+  display: none;
+}
+.mobile-only {
+  display: none !important;
+}
+.desktop-only {
+  display: block;
+}
+.desktop-flex {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .mobile-only { display: block !important; }
+  .mobile-flex { display: flex !important; }
+  .desktop-only { display: none !important; }
+  .desktop-flex { display: none !important; }
+
+  /* Full Screen Menu Overlay */
+  .mobile-menu-overlay {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #ffffff;
+    z-index: 9999;
+    padding: 2rem 1.5rem;
+    animation: slide-down 0.2s ease-out forwards;
+  }
+  
+  .mobile-menu-overlay .nav-link-btn {
+    padding: 1.2rem !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 0.8rem;
+    justify-content: flex-start;
+  }
+  .mobile-menu-overlay .nav-link-text {
+    display: inline-block !important;
+  }
+
+  /* Bottom Sheet (Filtros) */
+  .mobile-filter-sheet-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+    animation: fade-in 0.2s ease-out forwards;
+  }
+
+  .mobile-filter-sheet {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #ffffff;
+    border-radius: 20px 20px 0 0;
+    z-index: 9999;
+    padding: 1.5rem;
+    padding-bottom: 3rem;
+    animation: slide-up 0.2s ease-out forwards;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  }
+
+  .mobile-filter-sheet .filter-chip {
+    padding: 0.8rem !important;
+    font-size: 0.9rem !important;
+    justify-content: center;
+  }
+
+  .mobile-filter-sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .mobile-filter-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================================
+   10. RESPONSIVE MEDIA QUERIES BASE
    ============================================================ */
 @media (max-width: 1280px) {
   .kpi-bar { grid-template-columns: repeat(3, 1fr); }
@@ -1283,11 +1431,35 @@ body {
 @media (max-width: 1024px) {
   .charts-grid { grid-template-columns: 1fr; }
   .charts-grid--3col { grid-template-columns: 1fr; }
+  .dashboard-grid-top { grid-template-columns: 1fr; }
+  .dashboard-grid-3col { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
-  .analytics-page { padding: 1rem; }
-  .kpi-bar { grid-template-columns: repeat(2, 1fr); }
+  .analytics-page { padding: 0.5rem; }
+  .kpi-bar { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .kpi-card { padding: 0.8rem; }
+  .kpi-card__value { font-size: 1.5rem; }
+  .chart-card { padding: 0.8rem; }
+  
+  .dashboard-header { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .dashboard-title { font-size: 1.1rem !important; }
+  .dashboard-subtitle { font-size: 0.65rem !important; }
+
+  /* Reducir Navigation */
+  .nav-header {
+    padding: 0 0.8rem !important;
+    height: 48px !important;
+  }
+  .nav-link-text { display: none; }
+  .nav-link-btn { padding: 0.4rem !important; }
+  .nav-brand-text { display: none; }
 
   .mtp-sidebar {
     position: fixed;
@@ -1319,4 +1491,9 @@ body {
 
   .mtp-stats-panel { grid-template-columns: 1fr; }
   .mtp-map-area { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .kpi-bar { grid-template-columns: 1fr; }
+  .global-filters { flex-wrap: nowrap; padding-bottom: 0.5rem; }
 }

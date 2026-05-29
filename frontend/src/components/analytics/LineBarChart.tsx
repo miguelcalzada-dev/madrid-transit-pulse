@@ -71,7 +71,7 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.2rem', alignItems: 'stretch' }}>
+    <div className="dashboard-grid-3col">
       {/* Trenes por línea */}
       <div className="chart-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="chart-card__header">

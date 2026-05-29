@@ -82,12 +82,12 @@ export default function DashboardPage() {
   return (
     <main className="analytics-page">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '1.2rem' }}>
+      <div className="dashboard-header">
         <div>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em', lineHeight: 1 }}>
+          <h1 className="dashboard-title" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em', lineHeight: 1 }}>
             Centro de Control
           </h1>
-          <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>
+          <p className="dashboard-subtitle" style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>
             Monitorización en tiempo real — Red Cercanías Madrid
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
       />
 
       {/* Primera fila de gráficos — Actividad y Donut */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.2rem', marginBottom: '1.2rem', alignItems: 'stretch' }}>
+      <div className="dashboard-grid-top">
         <ActivityChart history={history.map(h => ({
           time: h.time,
           trenes: lineFilter === 'ALL' ? h.all.trenes : (h.byLine[lineFilter]?.trenes || 0),
