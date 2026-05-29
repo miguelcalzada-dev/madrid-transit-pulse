@@ -1,0 +1,108 @@
+# ============================================================
+# application.yml - Configuración principal del microservicio
+# Madrid Transit Pulse: Ingestion Service
+# ============================================================
+
+spring:
+  application:
+    name: mtp-ingestion-service
+
+  # ----------------------------------------------------------
+  # Configuración de Kafka Producer
+  # Conecta al cluster local levantado con docker-compose
+  # ----------------------------------------------------------
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      # Serialización en JSON para compatibilidad con Spark
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      # Garantías de entrega: acks=all asegura que todos los replicas confirmen
+      acks: all
+      # Reintentos en caso de fallo transitorio
+      retries: 3
+      # Agrupación de mensajes para mayor throughput
+      batch-size: 16384
+      linger-ms: 5
+      # Compresión para reducir ancho de banda
+      compression-type: snappy
+      properties:
+        # Previene mensajes duplicados en caso de reintento
+        enable.idempotence: true
+        spring.json.add.type.headers: false
+
+  # ----------------------------------------------------------
+  # WebClient (WebFlux) para llamadas HTTP no bloqueantes
+  # ----------------------------------------------------------
+  webflux:
+    base-path: /api
+
+# ----------------------------------------------------------
+# Servidor embebido Tomcat
+# ----------------------------------------------------------
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+
+# ----------------------------------------------------------
+# Actuator: Exponer endpoints de salud y métricas
+# ----------------------------------------------------------
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# ----------------------------------------------------------
+# Configuración específica del dominio de transporte
+# ----------------------------------------------------------
+madrid-transit:
+  # Topic principal donde se publican los mensajes crudos
+  kafka:
+    topic-raw: madrid-transit-raw
+    topic-processed: madrid-transit-processed
+
+  # Configuración del scheduler de ingesta
+  scheduler:
+    # Intervalo entre peticiones a la API EMT (en milisegundos)
+    emt-interval-ms: ${EMT_SCHEDULER_MS:30000}       # 30 segundos
+    # Intervalo entre peticiones a la API Renfe
+    renfe-interval-ms: ${RENFE_SCHEDULER_MS:60000}   # 60 segundos
+
+  # URLs de las APIs externas (simuladas en desarrollo)
+  emt:
+    base-url: ${EMT_BASE_URL:https://openapi.emtmadrid.es/v2}
+    client-id: ${EMT_CLIENT_ID:DEMO_CLIENT_ID}
+    passkey: ${EMT_PASSKEY:DEMO_PASSKEY}
+    # Número de líneas a consultar en cada ciclo
+    lines-per-batch: 10
+
+  renfe:
+    base-url: ${RENFE_BASE_URL:https://api.renfe.com/v1}
+    api-key: ${RENFE_API_KEY:DEMO_API_KEY}
+
+# ----------------------------------------------------------
+# Logging
+# ----------------------------------------------------------
+logging:
+  level:
+    com.madridtransit: DEBUG
+    org.springframework.kafka: INFO
+    reactor.netty: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# ----------------------------------------------------------
+# OpenAPI / Swagger UI
+# Accesible en: http://localhost:8080/swagger-ui.html
+# ----------------------------------------------------------
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

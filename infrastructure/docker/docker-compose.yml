@@ -1,0 +1,139 @@
+version: '3.8'
+
+# ============================================================
+# Madrid Transit Pulse - Infraestructura de Desarrollo Local
+# ============================================================
+# Levanta: Kafka + Zookeeper + MongoDB + Mongo Express (UI)
+# Uso: docker-compose up -d
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # Zookeeper: Coordinador de cluster para Kafka
+  # ----------------------------------------------------------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: mtp-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - mtp-network
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------
+  # Kafka: Bus de mensajes principal
+  # Topic: madrid-transit-raw (mensajes crudos EMT/Renfe)
+  # ----------------------------------------------------------
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: mtp-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      # Topic de datos crudos de transporte
+      KAFKA_CREATE_TOPICS: "madrid-transit-raw:3:1,madrid-transit-processed:3:1"
+    networks:
+      - mtp-network
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # ----------------------------------------------------------
+  # Kafka UI: Interfaz web para monitorizar topics y mensajes
+  # Acceso: http://localhost:8090
+  # ----------------------------------------------------------
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: mtp-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: madrid-transit-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    networks:
+      - mtp-network
+
+  # ----------------------------------------------------------
+  # MongoDB: Base de datos principal para alertas procesadas
+  # Colección principal: transit_alerts
+  # ----------------------------------------------------------
+  mongodb:
+    image: mongo:7.0
+    container_name: mtp-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: madridpulse2024
+      MONGO_INITDB_DATABASE: madrid_transit
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mtp-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------
+  # Mongo Express: Interfaz web para MongoDB
+  # Acceso: http://localhost:8081
+  # ----------------------------------------------------------
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: mtp-mongo-express
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: madridpulse2024
+      ME_CONFIG_MONGODB_URL: mongodb://admin:madridpulse2024@mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    networks:
+      - mtp-network
+
+# ----------------------------------------------------------
+# Volúmenes persistentes
+# ----------------------------------------------------------
+volumes:
+  mongodb_data:
+    driver: local
+
+# ----------------------------------------------------------
+# Red interna del proyecto
+# ----------------------------------------------------------
+networks:
+  mtp-network:
+    driver: bridge
+    name: madrid-transit-pulse-network
