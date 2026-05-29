@@ -26,8 +26,10 @@ export default function Navigation() {
         background: '#ffffff',
         borderBottom: '1px solid #e2e8f0',
         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
+        left: 0,
+        width: '100%',
         zIndex: 1000,
         flexShrink: 0,
       }}>

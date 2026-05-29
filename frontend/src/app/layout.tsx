@@ -19,6 +19,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   themeColor: '#ffffff',
 };
 
@@ -49,7 +51,7 @@ export default function RootLayout({
       </head>
       <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', margin: 0, overflow: 'hidden' }}>
         <Navigation />
-        <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div style={{ flex: 1, overflow: 'hidden', paddingTop: '56px' }}>
           {children}
         </div>
       </body>
