@@ -80,11 +80,11 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={trenesPorLinea} margin={{ top: 12, right: 8, left: -20, bottom: 4 }}
-            onClick={(d) => d?.activePayload && onLineClick(d.activePayload[0]?.payload?.linea)}>
+            onClick={(d: any) => d?.activePayload && onLineClick(d.activePayload[0]?.payload?.linea)}>
             <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" vertical={false} />
             <XAxis dataKey="linea" tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-            <Tooltip {...tooltipStyle} formatter={(v: number) => [`${v} trenes`, 'Activos']} />
+            <Tooltip {...tooltipStyle} formatter={(v: any) => [`${v} trenes`, 'Activos']} />
             <Bar dataKey="trenes" radius={[4, 4, 0, 0]} cursor="pointer">
               {trenesPorLinea.map(d => (
                 <Cell key={d.linea}
@@ -114,12 +114,12 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
               <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" vertical={false} />
               <XAxis dataKey="linea" tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-              <Tooltip {...tooltipStyle} formatter={(v: number) => [`${v} km/h`, 'Velocidad media']} />
+              <Tooltip {...tooltipStyle} formatter={(v: any) => [`${v} km/h`, 'Velocidad media']} />
               <Bar dataKey="velocidad" radius={[4, 4, 0, 0]}>
                 {velocidadPorLinea.map(d => (
                   <Cell key={d.linea} fill={d.color} fillOpacity={0.75} />
                 ))}
-                <LabelList dataKey="velocidad" position="top" style={{ fontSize: 10, fill: '#475569', fontWeight: 600 }} formatter={(v: number) => `${v}`} />
+                <LabelList dataKey="velocidad" position="top" style={{ fontSize: 10, fill: '#475569', fontWeight: 600 }} formatter={(v: any) => `${v}`} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -141,7 +141,7 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
                 <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="linea" tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }} axisLine={false} tickLine={false} width={30} />
-                <Tooltip {...tooltipStyle} formatter={(v: number) => [`${v} incidencias`, 'Alertas']} />
+                <Tooltip {...tooltipStyle} formatter={(v: any) => [`${v} incidencias`, 'Alertas']} />
                 <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
                   {alertasPorLinea.map(d => (
                     <Cell key={d.linea} fill={d.color} fillOpacity={0.8} />
