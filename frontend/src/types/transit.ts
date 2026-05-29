@@ -12,7 +12,7 @@
 
 export type DataSource = 'RENFE';
 export type VehicleStatus = 'EN_RUTA' | 'EN_PARADA' | 'FUERA_DE_SERVICIO' | 'DESCONOCIDO';
-export type AlertType = 'posible_retraso_grave' | 'servicio_interrumpido' | 'anomalia_ruta';
+export type AlertType = 'posible_retraso_grave' | 'servicio_interrumpido' | 'anomalia_ruta' | 'incidencia_oficial';
 export type Severity = 'ALTA' | 'MEDIA' | 'BAJA';
 
 // ============================================================
