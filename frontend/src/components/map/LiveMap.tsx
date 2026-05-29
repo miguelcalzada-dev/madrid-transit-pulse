@@ -105,9 +105,11 @@ interface LiveMapProps {
 const LINE_ORDER = ['C1', 'C2', 'C3', 'C4', 'C5', 'C7', 'C8', 'C9', 'C10'];
 
 export default function LiveMap({ vehiculos, alertas, vehiculoFocal }: LiveMapProps) {
-  const [lineasVisibles, setLineasVisibles] = useState<Set<string>>(new Set(LINE_ORDER));
+  const [isClient, setIsClient] = useState(false);
+  const [mostrarEstaciones, setMostrarEstaciones] = useState(false);
   const [mostrarAlertas, setMostrarAlertas] = useState(true);
-  const [mostrarEstaciones, setMostrarEstaciones] = useState(true);
+  const [lineasVisibles, setLineasVisibles] = useState<Set<string>>(new Set(LINE_ORDER));
+  const [panelFiltrosAbierto, setPanelFiltrosAbierto] = useState(false);
 
   const vehiculosEnAlerta = useMemo(() => new Set(alertas.map(a => a.vehicleId)), [alertas]);
 
@@ -266,72 +268,83 @@ export default function LiveMap({ vehiculos, alertas, vehiculoFocal }: LiveMapPr
       </MapContainer>
 
       {/* Panel de control de líneas */}
-      <div style={{
+      <div className="mtp-map-lines-panel" style={{
         position: 'absolute', top: '1rem', left: '1rem', zIndex: 1000,
         background: '#fff', borderRadius: 12, border: '1px solid #e2e8f0',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)', padding: '0.75rem',
         minWidth: 160, maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-          <span style={{ fontSize: '0.6rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-            Líneas visibles
-          </span>
-          <button
-            onClick={() => setLineasVisibles(allVisible ? new Set() : new Set(LINE_ORDER))}
-            style={{ fontSize: '0.58rem', color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
-          >
-            {allVisible ? 'Ocultar todo' : 'Mostrar todo'}
-          </button>
-        </div>
+        {/* Mobile Toggle Button */}
+        <button 
+          className="mobile-only"
+          onClick={() => setPanelFiltrosAbierto(!panelFiltrosAbierto)}
+          style={{ width: '100%', padding: '0.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontWeight: 600, fontSize: '0.8rem', color: '#0f172a' }}
+        >
+          {panelFiltrosAbierto ? 'Ocultar Filtros' : 'Filtros del Mapa'}
+        </button>
 
-        {LINE_ORDER.map(lineId => {
-          const lc = LINE_COLORS[lineId] || DEFAULT_LINE_COLOR;
-          const visible = lineasVisibles.has(lineId);
-          const count = statsPorLinea[lineId] || 0;
-          return (
-            <div
-              key={lineId}
-              onClick={() => toggleLinea(lineId)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                padding: '0.3rem 0.4rem', borderRadius: 6, cursor: 'pointer',
-                marginBottom: '0.15rem',
-                background: visible ? `${lc.bg}` : '#f8fafc',
-                border: `1px solid ${visible ? lc.bg : '#f1f5f9'}`,
-                opacity: count === 0 ? 0.4 : 1,
-                transition: 'all 0.15s',
-              }}
+        <div className={panelFiltrosAbierto ? '' : 'desktop-only'} style={{ marginTop: panelFiltrosAbierto ? '0.75rem' : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '0.6rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Líneas visibles
+            </span>
+            <button
+              onClick={() => setLineasVisibles(allVisible ? new Set() : new Set(LINE_ORDER))}
+              style={{ fontSize: '0.58rem', color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
             >
-              <div style={{
-                width: 18, height: 18, borderRadius: '50%',
-                background: visible ? lc.bg : '#e2e8f0',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.52rem', fontWeight: 800, color: visible ? lc.text : '#94a3b8',
-                flexShrink: 0,
-              }}>
-                {lineId.replace('C', '')}
-              </div>
-              <span style={{ fontSize: '0.68rem', fontWeight: 600, color: visible ? '#0f172a' : '#94a3b8' }}>
-                {lineId}
-              </span>
-              {count > 0 && (
-                <span style={{ marginLeft: 'auto', fontSize: '0.58rem', color: '#64748b', background: '#f1f5f9', borderRadius: '999px', padding: '0 0.3rem' }}>
-                  {count}
-                </span>
-              )}
-            </div>
-          );
-        })}
+              {allVisible ? 'Ocultar todo' : 'Mostrar todo'}
+            </button>
+          </div>
 
-        <div style={{ borderTop: '1px solid #f1f5f9', marginTop: '0.5rem', paddingTop: '0.5rem' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.65rem', color: '#475569' }}>
-            <input type="checkbox" checked={mostrarEstaciones} onChange={e => setMostrarEstaciones(e.target.checked)} style={{ accentColor: '#dc2626' }} />
-            Estaciones
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.65rem', color: '#475569', marginTop: '0.3rem' }}>
-            <input type="checkbox" checked={mostrarAlertas} onChange={e => setMostrarAlertas(e.target.checked)} style={{ accentColor: '#d97706' }} />
-            Zonas de alerta
-          </label>
+          {LINE_ORDER.map(lineId => {
+            const lc = LINE_COLORS[lineId] || DEFAULT_LINE_COLOR;
+            const visible = lineasVisibles.has(lineId);
+            const count = statsPorLinea[lineId] || 0;
+            return (
+              <div
+                key={lineId}
+                onClick={() => toggleLinea(lineId)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  padding: '0.3rem 0.4rem', borderRadius: 6, cursor: 'pointer',
+                  marginBottom: '0.15rem',
+                  background: visible ? `${lc.bg}` : '#f8fafc',
+                  border: `1px solid ${visible ? lc.bg : '#f1f5f9'}`,
+                  opacity: count === 0 ? 0.4 : 1,
+                  transition: 'all 0.15s',
+                }}
+              >
+                <div style={{
+                  width: 18, height: 18, borderRadius: '50%',
+                  background: visible ? lc.bg : '#e2e8f0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.52rem', fontWeight: 800, color: visible ? lc.text : '#94a3b8',
+                  flexShrink: 0,
+                }}>
+                  {lineId.replace('C', '')}
+                </div>
+                <span style={{ fontSize: '0.68rem', fontWeight: 600, color: visible ? '#0f172a' : '#94a3b8' }}>
+                  {lineId}
+                </span>
+                {count > 0 && (
+                  <span style={{ marginLeft: 'auto', fontSize: '0.58rem', color: '#64748b', background: '#f1f5f9', borderRadius: '999px', padding: '0 0.3rem' }}>
+                    {count}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+
+          <div style={{ borderTop: '1px solid #f1f5f9', marginTop: '0.5rem', paddingTop: '0.5rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.65rem', color: '#475569' }}>
+              <input type="checkbox" checked={mostrarEstaciones} onChange={e => setMostrarEstaciones(e.target.checked)} style={{ accentColor: '#dc2626' }} />
+              Estaciones
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.65rem', color: '#475569', marginTop: '0.3rem' }}>
+              <input type="checkbox" checked={mostrarAlertas} onChange={e => setMostrarAlertas(e.target.checked)} style={{ accentColor: '#d97706' }} />
+              Zonas de alerta
+            </label>
+          </div>
         </div>
       </div>
 

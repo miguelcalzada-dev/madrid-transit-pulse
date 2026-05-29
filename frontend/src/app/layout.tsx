@@ -47,7 +47,7 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body style={{ display: 'flex', flexDirection: 'column', height: '100vh', margin: 0, overflow: 'hidden' }}>
+      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', margin: 0, overflow: 'hidden' }}>
         <Navigation />
         <div style={{ flex: 1, overflow: 'hidden' }}>
           {children}

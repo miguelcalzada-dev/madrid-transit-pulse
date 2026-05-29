@@ -96,7 +96,7 @@ export default function AlertasPage() {
   return (
     <main className="analytics-page">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '1.2rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.2rem' }}>
         <div>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em' }}>
             Incidencias en Tiempo Real
@@ -120,10 +120,10 @@ export default function AlertasPage() {
       </div>
 
       {/* Resumen severidades */}
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.2rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.2rem' }}>
         {(Object.entries(SEV_CONFIG) as [keyof typeof SEV_CONFIG, typeof SEV_CONFIG[keyof typeof SEV_CONFIG]][]).map(([key, cfg]) => (
           <div key={key} style={{
-            flex: 1, padding: '0.8rem 1rem', borderRadius: 10,
+            flex: '1 1 calc(50% - 0.75rem)', minWidth: 120, padding: '0.8rem 1rem', borderRadius: 10,
             background: cfg.bg, border: `1px solid ${cfg.border}`,
             borderLeft: `4px solid ${cfg.color}`,
           }}>
@@ -137,7 +137,7 @@ export default function AlertasPage() {
           </div>
         ))}
         <div style={{
-          flex: 1, padding: '0.8rem 1rem', borderRadius: 10,
+          flex: '1 1 calc(50% - 0.75rem)', minWidth: 120, padding: '0.8rem 1rem', borderRadius: 10,
           background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #2563eb',
         }}>
           <div style={{ fontSize: '0.58rem', fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
