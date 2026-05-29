@@ -1334,6 +1334,11 @@ body {
   .desktop-only { display: none !important; }
   .desktop-flex { display: none !important; }
 
+  /* iOS Safari Anti-Zoom Fix */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
   /* Full Screen Menu Overlay */
   .mobile-menu-overlay {
     display: flex;
