@@ -34,8 +34,18 @@ const app = express();
 
 app.use(helmet({ contentSecurityPolicy: false }));
 
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003').split(',').map(o => o.trim());
+
 app.use(cors({
-  origin: (process.env.CORS_ORIGINS || 'http://localhost:3000').split(','),
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow *.vercel.app domains and any configured origin
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
+      return callback(null, true);
+    }
+    callback(new Error(`CORS bloqueado para: ${origin}`));
+  },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -61,6 +71,9 @@ app.use(morgan('dev', {
 // Importar módulos del dominio (mock o real)
 let TransitAlert, VehicleStatus, dbEvents, generarHorarioEstacion;
 
+// generarHorarioEstacion siempre se carga desde mockDb (es un cálculo puro de horarios, no necesita BD)
+const { generarHorarioEstacion: _generarHorarioEstacion } = require('./services/mockDb');
+
 if (USE_MOCK) {
   const mock = require('./services/mockDb');
   mock.inicializar();
@@ -74,6 +87,7 @@ if (USE_MOCK) {
   TransitAlert  = require('./models/TransitAlert');
   VehicleStatus = require('./models/VehicleStatus');
   dbEvents      = null; // en producción se usa Change Streams
+  generarHorarioEstacion = _generarHorarioEstacion; // siempre disponible
 }
 
 // Inyectar en el contexto de la app para que las rutas lo usen

@@ -31,7 +31,14 @@ const iniciarSocketServer = (httpServer, TransitAlert, VehicleStatus, dbEvents) 
 
   io = new Server(httpServer, {
     cors: {
-      origin: (process.env.CORS_ORIGINS || 'http://localhost:3000').split(','),
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const allowed = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003').split(',').map(o => o.trim());
+        if (allowed.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
+          return callback(null, true);
+        }
+        callback(new Error(`CORS bloqueado para: ${origin}`));
+      },
       methods: ['GET', 'POST'],
       credentials: true,
     },
