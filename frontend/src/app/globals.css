@@ -1427,7 +1427,34 @@ body {
 }
 
 /* ============================================================
-   10. RESPONSIVE MEDIA QUERIES BASE
+   10. ESTACIONES — Buscador y Panel de Tiempos
+   ============================================================ */
+
+/* Input del buscador de estaciones (placeholder blanco) */
+.estaciones-search::placeholder { color: rgba(255,255,255,0.65); }
+.estaciones-search:focus { outline: none; background: rgba(255,255,255,0.3) !important; }
+
+/* Scroll bounce in mobile for estaciones list */
+.estaciones-list {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hover en tarjetas de estación */
+@media (hover: hover) {
+  div[data-estacion]:hover {
+    background: #f8fafc !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  }
+}
+
+/* Animación del detalle de estación */
+@keyframes fade-scale {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================
+   11. RESPONSIVE MEDIA QUERIES BASE
    ============================================================ */
 @media (max-width: 1280px) {
   .kpi-bar { grid-template-columns: repeat(3, 1fr); }

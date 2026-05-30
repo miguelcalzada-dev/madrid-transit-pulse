@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { LayoutDashboard, Map as MapIcon, AlertTriangle, Train, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Map as MapIcon, AlertTriangle, Train, Menu, X, MapPin } from 'lucide-react';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -11,6 +11,7 @@ export default function Navigation() {
 
   const navLinks = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/estaciones', label: 'Estaciones', icon: MapPin },
     { href: '/mapa', label: 'Mapa en Vivo', icon: MapIcon },
     { href: '/alertas', label: 'Incidencias', icon: AlertTriangle },
   ];
