@@ -19,10 +19,6 @@ export default function KpiBar({ vehiculos, alertas, stats, conectado, lineFilte
   const enRuta = filtered.filter(v => v.vehicleStatus === 'EN_RUTA').length;
   const conAlerta = filtered.filter(v => v.tieneAlerta).length;
   const pctEnRuta = filtered.length > 0 ? ((enRuta / filtered.length) * 100).toFixed(0) : '0';
-  const avgSpeed = useMemo(() => {
-    const speeds = filtered.filter(v => v.speedKmh != null && v.speedKmh > 0).map(v => v.speedKmh!);
-    return speeds.length > 0 ? (speeds.reduce((a, b) => a + b, 0) / speeds.length).toFixed(1) : '—';
-  }, [filtered]);
 
   const kpis = [
     {
@@ -45,13 +41,6 @@ export default function KpiBar({ vehiculos, alertas, stats, conectado, lineFilte
       sub: `${enRuta} de ${filtered.length} trenes`,
       icon: Activity,
       accent: parseInt(pctEnRuta) > 70 ? '#16a34a' : '#d97706',
-    },
-    {
-      label: 'Velocidad media',
-      value: avgSpeed !== '—' ? `${avgSpeed}` : '—',
-      sub: avgSpeed !== '—' ? 'km/h en circulación' : 'Sin datos',
-      icon: Zap,
-      accent: '#7c3aed',
     },
     {
       label: 'Conexión',

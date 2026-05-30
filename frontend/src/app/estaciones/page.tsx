@@ -1,21 +1,21 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useTransitData } from '@/hooks/useTransitData';
 import {
-  ESTACIONES, LINEAS_CERCANIAS,
-  haversineMetros, calcularDireccion, estimarTiempoLlegadaSegundos, formatTiempo,
+  ESTACIONES, LINEAS_CERCANIAS, haversineMetros,
   type Estacion, type LineaCercanias,
 } from '@/data/estaciones';
-import { VehicleData } from '@/types/transit';
 import { Star, Search, ChevronDown, ChevronUp, MapPin, Train, Navigation, Clock, Users, X, Locate } from 'lucide-react';
 
 // ── LocalStorage helpers ────────────────────────────────────
 const FAV_KEY = 'mtp_favoritos_estaciones';
 function getFavoritos(): string[] {
+  if (typeof window === 'undefined') return [];
   try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; }
 }
 function toggleFavorito(id: string): string[] {
+  if (typeof window === 'undefined') return [];
   const favs = getFavoritos();
   const idx = favs.indexOf(id);
   const next = idx >= 0 ? favs.filter(f => f !== id) : [...favs, id];
@@ -38,123 +38,103 @@ function LineaBadge({ lineaId }: { lineaId: string }) {
   );
 }
 
-// ── Sub-component: Tren próximo ─────────────────────────────
-function TrenProximo({ tren, estacion }: { tren: VehicleData; estacion: Estacion }) {
-  if (!tren.latitude || !tren.longitude) return null;
+function HorarioProgramado({ horario }: { horario: { lineId: string, destino: string, sentido: string, scheduledTime: number, realTime: number, retrasoMinutos: number, estado: string } }) {
+  const [ahora, setAhora] = useState<number | null>(null);
 
-  const dist = haversineMetros(tren.latitude, tren.longitude, estacion.lat, estacion.lon);
-  if (dist > 80000) return null; // más de 80km = no relevante
+  useEffect(() => {
+    setAhora(Date.now());
+    const iv = setInterval(() => setAhora(Date.now()), 10000);
+    return () => clearInterval(iv);
+  }, []);
 
-  const linea = LINEAS_CERCANIAS.find(l => l.id === tren.lineId);
-  const tiempoSeg = estimarTiempoLlegadaSegundos(dist, tren.speedKmh ?? 0, tren.delaySeconds ?? 0);
-  const direccion = linea && tren.bearing != null
-    ? calcularDireccion(linea, tren.latitude, tren.longitude, tren.bearing)
-    : null;
+  if (ahora === null) return null; // Previene hydration mismatch en SSR
 
-  const statusColor = tren.tieneAlerta ? '#dc2626' : tren.vehicleStatus === 'EN_RUTA' ? '#16a34a' : tren.vehicleStatus === 'EN_PARADA' ? '#d97706' : '#94a3b8';
-  const statusLabel = tren.vehicleStatus === 'EN_RUTA' ? 'En ruta' : tren.vehicleStatus === 'EN_PARADA' ? 'En parada' : 'Desconocido';
+  const faltanMs = horario.realTime - ahora;
+  const faltanMinutos = Math.floor(faltanMs / 60000);
+  
+  const hSched = new Date(horario.scheduledTime);
+  const schedStr = hSched.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  
+  const hReal = new Date(horario.realTime);
+  const realStr = hReal.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-  const distKm = dist < 1000 ? `${Math.round(dist)}m` : `${(dist / 1000).toFixed(1)}km`;
+  const isDelayed = horario.estado === 'RETRASO';
+
+  // Ocultar trenes que ya pasaron hace más de 1 minuto
+  if (faltanMs < -60000) return null;
+
+  const displayFaltan = Math.max(0, faltanMinutos);
 
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: '0.75rem',
       padding: '0.85rem 1rem', borderRadius: '12px',
-      background: '#ffffff', border: '1px solid #e2e8f0',
-      marginBottom: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+      background: '#fff', border: '1px solid #e2e8f0',
+      marginBottom: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
     }}>
-      {/* Tiempo */}
-      <div style={{ textAlign: 'center', minWidth: '52px' }}>
-        {tiempoSeg != null ? (
-          <>
-            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: tiempoSeg < 120 ? '#dc2626' : tiempoSeg < 300 ? '#d97706' : '#0f172a', lineHeight: 1 }}>
-              {formatTiempo(tiempoSeg)}
-            </div>
-            <div style={{ fontSize: '0.55rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>est.</div>
-          </>
-        ) : (
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#d97706' }}>Parado</div>
-        )}
-      </div>
-
-      {/* Separador */}
-      <div style={{ width: '1px', height: '40px', background: '#f1f5f9', flexShrink: 0 }} />
-
-      {/* Detalles */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
-          <LineaBadge lineaId={tren.lineId} />
-          {direccion && (
-            <span style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 600 }}>
-              → {direccion.destino}
-            </span>
-          )}
-          {tren.tieneAlerta && (
-            <span style={{ fontSize: '0.6rem', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '4px', padding: '0.05rem 0.3rem', fontWeight: 700 }}>
-              ⚠ ALERTA
-            </span>
-          )}
+      <div style={{ textAlign: 'center', minWidth: '55px' }}>
+        <div style={{ fontSize: displayFaltan === 0 ? '0.9rem' : '1.2rem', fontWeight: 800, color: displayFaltan === 0 ? '#16a34a' : (isDelayed ? '#dc2626' : '#16a34a'), lineHeight: 1 }}>
+          {displayFaltan === 0 ? 'En andén' : displayFaltan > 59 ? realStr : `${displayFaltan} min`}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.62rem', color: '#64748b' }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: statusColor, display: 'inline-block' }} />
-            {statusLabel}
-          </span>
-          <span style={{ fontSize: '0.62rem', color: '#94a3b8' }}>·</span>
-          <span style={{ fontSize: '0.62rem', color: '#94a3b8' }}>{distKm}</span>
-          {(tren.speedKmh ?? 0) > 0 && (
+        <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '0.2rem' }}>
+          {isDelayed ? (
             <>
-              <span style={{ fontSize: '0.62rem', color: '#94a3b8' }}>·</span>
-              <span style={{ fontSize: '0.62rem', color: '#94a3b8' }}>{Math.round(tren.speedKmh ?? 0)} km/h</span>
+              <span style={{ textDecoration: 'line-through', marginRight: '4px', opacity: 0.6 }}>{schedStr}</span>
+              <span style={{ color: '#dc2626' }}>{realStr}</span>
             </>
+          ) : (
+            <span style={{ color: '#16a34a' }}>{schedStr}</span>
           )}
         </div>
-        {/* Barra de ocupación */}
-        {tren.occupancyPct != null && (
-          <div style={{ marginTop: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Users size={9} color="#94a3b8" />
-            <div style={{ flex: 1, height: 4, background: '#f1f5f9', borderRadius: '999px', overflow: 'hidden' }}>
-              <div style={{
-                height: '100%', borderRadius: '999px',
-                width: `${tren.occupancyPct}%`,
-                background: tren.occupancyPct > 80 ? '#dc2626' : tren.occupancyPct > 50 ? '#d97706' : '#16a34a',
-              }} />
-            </div>
-            <span style={{ fontSize: '0.55rem', color: '#94a3b8' }}>{tren.occupancyPct}%</span>
-          </div>
-        )}
       </div>
-
-      {/* Retraso */}
-      {(tren.delaySeconds ?? 0) > 60 && (
-        <div style={{ textAlign: 'center', flexShrink: 0 }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#dc2626' }}>
-            +{Math.floor((tren.delaySeconds ?? 0) / 60)}m
-          </div>
-          <div style={{ fontSize: '0.5rem', color: '#94a3b8' }}>retraso</div>
+      <div style={{ width: '1px', height: '30px', background: '#e2e8f0', flexShrink: 0 }} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <LineaBadge lineaId={horario.lineId} />
+          <span style={{ fontSize: '0.8rem', color: '#334155', fontWeight: 600 }}>
+            → {horario.destino}
+          </span>
         </div>
-      )}
+        <div style={{ fontSize: '0.65rem', color: isDelayed ? '#dc2626' : '#64748b', marginTop: '0.2rem', fontWeight: isDelayed ? 600 : 400 }}>
+          {isDelayed ? `Retraso de ${horario.retrasoMinutos} min` : 'En hora'}
+        </div>
+      </div>
     </div>
   );
 }
 
+// Component removed
+
 // ── Sub-component: Panel de tiempos de una estación ─────────
-function EstacionDetalle({ estacion, vehiculos, onClose }: { estacion: Estacion; vehiculos: VehicleData[]; onClose: () => void }) {
+function EstacionDetalle({ estacion, onClose }: { estacion: Estacion; onClose: () => void }) {
   const [favoritos, setFavoritos] = useState<string[]>(() => getFavoritos());
   const esFavorita = favoritos.includes(estacion.id);
 
-  const trenesRelevantes = useMemo(() => {
-    return vehiculos
-      .filter(v => estacion.lineas.includes(v.lineId) && v.latitude && v.longitude)
-      .sort((a, b) => {
-        const dA = haversineMetros(a.latitude!, a.longitude!, estacion.lat, estacion.lon);
-        const dB = haversineMetros(b.latitude!, b.longitude!, estacion.lat, estacion.lon);
-        const tA = estimarTiempoLlegadaSegundos(dA, a.speedKmh ?? 0, a.delaySeconds ?? 0) ?? 999999;
-        const tB = estimarTiempoLlegadaSegundos(dB, b.speedKmh ?? 0, b.delaySeconds ?? 0) ?? 999999;
-        return tA - tB;
-      })
-      .slice(0, 12);
-  }, [vehiculos, estacion]);
+  // The 'trenesRelevantes' estimation block has been removed in favor of the official timetable.
+
+  const [llegadasReales, setLlegadasReales] = useState<{ lineId: string, destino: string, sentido: string, scheduledTime: number, realTime: number, retrasoMinutos: number, estado: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLlegadas = useCallback(async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/estaciones/llegadas?lat=${estacion.lat}&lon=${estacion.lon}&lineas=${estacion.lineas.join(',')}`);
+      const data = await res.json();
+      if (data.ok) {
+        setLlegadasReales(data.llegadas);
+      }
+    } catch (e) {
+      console.error('Error fetching real ETAs', e);
+    } finally {
+      setLoading(false);
+    }
+  }, [estacion]);
+
+  // Refrescar desde el server cada 30 segundos
+  useEffect(() => {
+    fetchLlegadas();
+    const iv = setInterval(fetchLlegadas, 30000);
+    return () => clearInterval(iv);
+  }, [fetchLlegadas]);
 
   return (
     <div style={{
@@ -208,25 +188,17 @@ function EstacionDetalle({ estacion, vehiculos, onClose }: { estacion: Estacion;
 
       {/* Contenido scrollable */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.75rem' }}>
-          <Clock size={14} color="#2563eb" />
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0f172a' }}>Próximos trenes</span>
-          <span style={{ fontSize: '0.65rem', color: '#94a3b8', marginLeft: 'auto' }}>Tiempo real · {trenesRelevantes.length} trenes</span>
-        </div>
 
-        {trenesRelevantes.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#94a3b8' }}>
-            <Train size={40} style={{ marginBottom: '0.75rem', opacity: 0.4 }} />
-            <div style={{ fontWeight: 600, color: '#475569' }}>Sin datos disponibles</div>
-            <div style={{ fontSize: '0.75rem', marginTop: '0.3rem' }}>
-              El backend no está conectado o no hay trenes activos en estas líneas.
-            </div>
+        {llegadasReales.length === 0 && !loading && (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b', fontSize: '0.9rem' }}>
+            No hay trenes acercándose en este momento.
           </div>
-        ) : (
-          trenesRelevantes.map(tren => (
-            <TrenProximo key={tren.vehicleId} tren={tren} estacion={estacion} />
-          ))
         )}
+
+        {/* Flat list sin agrupar por sentido */}
+        {llegadasReales.map((v, i) => (
+          <HorarioProgramado key={i} horario={v} />
+        ))}
       </div>
     </div>
   );
@@ -337,19 +309,25 @@ function LineaAcordeon({ linea, favoritos, onSelect, onToggleFav }: {
 export default function EstacionesPage() {
   const { vehiculos, conectado } = useTransitData();
   const [query, setQuery] = useState('');
-  const [favoritos, setFavoritos] = useState<string[]>(() => getFavoritos());
+  const [favoritos, setFavoritos] = useState<string[]>([]);
   const [estacionSeleccionada, setEstacionSeleccionada] = useState<Estacion | null>(null);
   const [activeTab, setActiveTab] = useState<'buscar' | 'lineas'>('buscar');
   const [cercanas, setCercanas] = useState<{ estacion: Estacion; distancia: number }[]>([]);
   const [loadingCercanas, setLoadingCercanas] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setFavoritos(getFavoritos());
+    setMounted(true);
+  }, []);
 
   const handleToggleFav = useCallback((id: string) => {
     setFavoritos(toggleFavorito(id));
   }, []);
 
+
   const estacionesFiltradas = useMemo(() => {
     if (!query.trim()) return ESTACIONES;
-    // Normalizar: quitar tildes/acentos para buscar sin necesidad de tildes
     const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const q = norm(query);
     return ESTACIONES.filter(e =>
@@ -381,12 +359,13 @@ export default function EstacionesPage() {
     );
   };
 
+  if (!mounted) return null; // Previene hidratación de favoritos
+
   return (
     <>
       {estacionSeleccionada && (
         <EstacionDetalle
           estacion={estacionSeleccionada}
-          vehiculos={vehiculos}
           onClose={() => setEstacionSeleccionada(null)}
         />
       )}

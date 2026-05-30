@@ -100,8 +100,6 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
               <th onClick={() => handleSort('vehicleId')}>ID Tren <SortIcon k="vehicleId" /></th>
               <th onClick={() => handleSort('lineId')}>Línea <SortIcon k="lineId" /></th>
               <th onClick={() => handleSort('vehicleStatus')}>Estado <SortIcon k="vehicleStatus" /></th>
-              <th onClick={() => handleSort('speedKmh')}>Velocidad <SortIcon k="speedKmh" /></th>
-              <th onClick={() => handleSort('occupancyPct')}>Ocupación <SortIcon k="occupancyPct" /></th>
               <th onClick={() => handleSort('delaySeconds')}>Retraso <SortIcon k="delaySeconds" /></th>
               <th>Coordenadas</th>
             </tr>
@@ -124,19 +122,6 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
                   <td>
                     <span className={`status-badge ${st.cls}`}>{st.label}</span>
                   </td>
-                  <td style={{ color: '#0f172a', fontWeight: 600 }}>
-                    {v.speedKmh != null ? `${v.speedKmh.toFixed(0)} km/h` : '—'}
-                  </td>
-                  <td>
-                    {v.occupancyPct != null ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <div style={{ width: 48, height: 6, background: '#f1f5f9', borderRadius: 3, overflow: 'hidden' }}>
-                          <div style={{ width: `${v.occupancyPct}%`, height: '100%', background: v.occupancyPct > 80 ? '#dc2626' : v.occupancyPct > 60 ? '#d97706' : '#16a34a', borderRadius: 3 }} />
-                        </div>
-                        <span style={{ fontSize: '0.65rem', color: '#475569' }}>{v.occupancyPct}%</span>
-                      </div>
-                    ) : '—'}
-                  </td>
                   <td style={{ color: (v.delaySeconds || 0) > 60 ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
                     {v.delaySeconds ? `+${Math.floor(v.delaySeconds / 60)}m` : '✓ A tiempo'}
                   </td>
@@ -147,7 +132,7 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
               );
             })}
             {visible.length === 0 && (
-              <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>Sin resultados</td></tr>
+              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>Sin resultados</td></tr>
             )}
           </tbody>
         </table>

@@ -13,7 +13,7 @@ const express = require('express');
  * @param {object} VehicleStatus - Repositorio de vehículos
  * @returns {express.Router}
  */
-module.exports = function buildRoutes(TransitAlert, VehicleStatus) {
+module.exports = function buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion) {
   const router = express.Router();
   const logger  = require('../config/logger');
 
@@ -211,6 +211,31 @@ module.exports = function buildRoutes(TransitAlert, VehicleStatus) {
       service: 'mtp-backend-api',
       uptime: `${Math.floor(process.uptime())}s`,
     });
+  });
+
+  // ----------------------------------------------------------
+  // GET /api/estaciones/llegadas
+  // ----------------------------------------------------------
+  router.get('/estaciones/llegadas', async (req, res) => {
+    try {
+      const lat = parseFloat(req.query.lat);
+      const lon = parseFloat(req.query.lon);
+      const lineas = req.query.lineas ? req.query.lineas.split(',') : [];
+
+      if (!lat || !lon) {
+        return res.status(400).json({ ok: false, error: 'Faltan parámetros lat y lon' });
+      }
+
+      if (typeof generarHorarioEstacion === 'function') {
+        const llegadas = generarHorarioEstacion(lineas);
+        res.json({ ok: true, timestamp: new Date().toISOString(), llegadas });
+      } else {
+        res.json({ ok: true, llegadas: [] });
+      }
+    } catch (err) {
+      logger.error(`[GET /estaciones/llegadas] ${err.message}`);
+      res.status(500).json({ ok: false, error: err.message });
+    }
   });
 
   return router;

@@ -33,20 +33,6 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
       .map(l => ({ linea: l, trenes: counts[l] || 0, color: LINE_COLORS[l] || '#64748b' }));
   }, [vehiculos]);
 
-  // Velocidad media por línea
-  const velocidadPorLinea = useMemo(() => {
-    const sums: Record<string, { total: number; count: number }> = {};
-    for (const v of vehiculos) {
-      if (v.speedKmh != null) {
-        if (!sums[v.lineId]) sums[v.lineId] = { total: 0, count: 0 };
-        sums[v.lineId].total += v.speedKmh;
-        sums[v.lineId].count += 1;
-      }
-    }
-    return LINE_ORDER
-      .filter(l => sums[l])
-      .map(l => ({ linea: l, velocidad: Math.round(sums[l].total / sums[l].count), color: LINE_COLORS[l] || '#64748b' }));
-  }, [vehiculos]);
 
   // Alertas por línea (Excluyendo 'CERCANIAS')
   const alertasPorLinea = useMemo(() => {
@@ -71,7 +57,7 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
   };
 
   return (
-    <div className="dashboard-grid-3col">
+    <div className="dashboard-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
       {/* Trenes por línea */}
       <div className="chart-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="chart-card__header">
@@ -102,29 +88,6 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
         </div>
       </div>
 
-      {/* Velocidad media por línea */}
-      <div className="chart-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <div className="chart-card__header">
-          <div className="chart-card__title">⚡ Velocidad media por línea</div>
-          <span className="chart-card__badge">km/h promedio</span>
-        </div>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={velocidadPorLinea} margin={{ top: 12, right: 8, left: -20, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="linea" tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-              <Tooltip {...tooltipStyle} formatter={(v: any) => [`${v} km/h`, 'Velocidad media']} />
-              <Bar dataKey="velocidad" radius={[4, 4, 0, 0]}>
-                {velocidadPorLinea.map(d => (
-                  <Cell key={d.linea} fill={d.color} fillOpacity={0.75} />
-                ))}
-                <LabelList dataKey="velocidad" position="top" style={{ fontSize: 10, fill: '#475569', fontWeight: 600 }} formatter={(v: any) => `${v}`} />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
 
       {/* Alertas por línea */}
       <div className="chart-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

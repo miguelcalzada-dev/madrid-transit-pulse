@@ -59,7 +59,7 @@ app.use(morgan('dev', {
 // ============================================================
 
 // Importar módulos del dominio (mock o real)
-let TransitAlert, VehicleStatus, dbEvents;
+let TransitAlert, VehicleStatus, dbEvents, generarHorarioEstacion;
 
 if (USE_MOCK) {
   const mock = require('./services/mockDb');
@@ -67,6 +67,7 @@ if (USE_MOCK) {
   TransitAlert  = mock.MockTransitAlert;
   VehicleStatus = mock.MockVehicleStatus;
   dbEvents      = mock.dbEvents;
+  generarHorarioEstacion = mock.generarHorarioEstacion;
 } else {
   const { connectDB } = require('./config/database');
   connectDB();
@@ -81,7 +82,7 @@ app.locals.VehicleStatus = VehicleStatus;
 
 // Rutas REST
 const buildRoutes = require('./routes/statusRoutes');
-app.use('/api', buildRoutes(TransitAlert, VehicleStatus));
+app.use('/api', buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion));
 
 // Ruta raíz
 app.get('/', (req, res) => res.json({

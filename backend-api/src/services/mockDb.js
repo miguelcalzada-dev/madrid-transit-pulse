@@ -4,7 +4,7 @@
  */
 
 const { EventEmitter } = require('events');
-const { getPuntoEnRuta, extraerLineaDeDescripcion, clasificarSeveridad } = require('./routeCoords');
+const { getPuntoEnRuta, extraerLineaDeDescripcion, clasificarSeveridad, haversineDistance, LINEAS_CERCANIAS } = require('./routeCoords');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const logger = require('../config/logger');
@@ -30,6 +30,7 @@ const ESTACIONES_MADRID = {
 
 let alertas = [];
 const vehiculos = new Map();
+const historicoPosiciones = new Map(); // Guarda la posición anterior para vectores de dirección
 let idCounter = 1000;
 const dbEvents = new EventEmitter();
 
@@ -40,9 +41,29 @@ const generarId = () => `mock_${(++idCounter).toString(16)}`;
 // ============================================================
 const consultarPosicionesRenfe = async () => {
   try {
-    const response = await axios.get(RENFE_VEHICLES_URL, { timeout: 8000 });
-    const data = response.data;
+    const [vehResponse, tripResponse] = await Promise.allSettled([
+      axios.get(RENFE_VEHICLES_URL, { timeout: 8000 }),
+      axios.get(RENFE_UPDATES_URL, { timeout: 8000 })
+    ]);
+    
+    const data = vehResponse.status === 'fulfilled' ? vehResponse.value.data : null;
+    const tripData = tripResponse.status === 'fulfilled' ? tripResponse.value.data : null;
+    
     if (!data || !data.entity) return;
+
+    // Map real delays from trip_updates
+    const realDelays = new Map();
+    if (tripData && tripData.entity) {
+      for (const ent of tripData.entity) {
+        const tu = ent.tripUpdate;
+        if (!tu || !tu.trip || !tu.trip.tripId) continue;
+        let delay = tu.delay || 0;
+        if (!delay && tu.stopTimeUpdate && tu.stopTimeUpdate.length > 0) {
+          delay = tu.stopTimeUpdate[0].arrival?.delay || tu.stopTimeUpdate[0].departure?.delay || 0;
+        }
+        realDelays.set(tu.trip.tripId, delay);
+      }
+    }
 
     let trenesActualizados = 0;
     for (const ent of data.entity) {
@@ -68,30 +89,42 @@ const consultarPosicionesRenfe = async () => {
       }
 
       const vehicleId = `RENFE-${lineId}-${rawVehicleId}`;
-      const speed = v.position?.speed !== undefined ? v.position.speed * 3.6 : Math.random() * 50 + 30;
+      const speed = v.position?.speed !== undefined ? v.position.speed * 3.6 : null;
       let status = v.currentStatus === 'STOPPED_AT' ? 'EN_PARADA' : 'EN_RUTA';
 
-      // Generar retrasos de forma realista para la demo
-      let delaySeconds = 0;
-      let tieneAlerta = false;
-      const hasLineAlert = alertas.some(a => a.lineId === lineId || a.lineId === 'CERCANIAS');
+      // Use real delay from trip_updates
+      let delaySeconds = realDelays.get(v.trip?.tripId) || 0;
       
-      if (hasLineAlert && Math.random() > 0.5) {
-        tieneAlerta = true;
-        delaySeconds = Math.floor(Math.random() * 600) + 120; // 2 a 12 minutos de retraso
-      } else if (Math.random() > 0.85) {
-        delaySeconds = Math.floor(Math.random() * 180) + 30; // 30s a 3 minutos
-      }
+      // Determine if there's a line alert (for UI warning indicators, independent of delay)
+      let tieneAlerta = alertas.some(a => a.lineId === lineId && a.severity !== 'BAJA');
+
+      // Update history for direction vectors
+      const currentPos = { lat, lon, time: Date.now() };
+      const prevPos = historicoPosiciones.get(vehicleId) || currentPos;
+      historicoPosiciones.set(vehicleId, currentPos);
 
       vehiculos.set(vehicleId, {
         _id: vehicleId, vehicleId, lineId, lineName: `Cercanías Madrid - Línea ${lineId}`, source: 'RENFE',
         latitude: lat, longitude: lon, speedKmh: speed, bearing: v.position?.bearing || 0,
-        vehicleStatus: status, occupancyPct: Math.floor(Math.random() * 65 + 20), delaySeconds,
+        vehicleStatus: status, occupancyPct: null, delaySeconds,
         tieneAlerta, lastSeenAt: new Date(v.timestamp ? parseInt(v.timestamp) * 1000 : Date.now()).toISOString(),
+        prevLatitude: prevPos.lat, prevLongitude: prevPos.lon
       });
       trenesActualizados++;
     }
-    logger.info(`🚆 [Renfe API] ${trenesActualizados} trenes de Cercanías mapeados en vivo`);
+    
+    // Cleanup de trenes inactivos (más de 3 minutos sin datos)
+    const limiteTiempo = Date.now() - 3 * 60 * 1000;
+    let trenesBorrados = 0;
+    for (const [id, v] of vehiculos.entries()) {
+      if (new Date(v.lastSeenAt).getTime() < limiteTiempo) {
+        vehiculos.delete(id);
+        historicoPosiciones.delete(id);
+        trenesBorrados++;
+      }
+    }
+
+    logger.info(`🚆 [Renfe API] ${trenesActualizados} trenes mapeados, ${trenesBorrados} inactivos purgados`);
   } catch (err) {
     logger.error(`❌ [Renfe Ingestion] Error posiciones: ${err.message}`);
   }
@@ -205,9 +238,33 @@ const MockTransitAlert = {
       lean: () => Promise.resolve(res),
     };
   },
-  countDocuments: () => Promise.resolve(alertas.length),
-  contarPorSeveridad: () => Promise.resolve([{_id:'ALTA', count:alertas.filter(a=>a.severity==='ALTA').length}, {_id:'MEDIA', count:alertas.filter(a=>a.severity==='MEDIA').length}]),
-  topLineasConAlertas: () => Promise.resolve([]),
+  countDocuments: (filtro = {}) => {
+    let res = alertas;
+    for (const [key, val] of Object.entries(filtro)) {
+      res = res.filter(a => a[key] === val);
+    }
+    return Promise.resolve(res.length);
+  },
+  contarPorSeveridad: () => {
+    const severidades = ['ALTA', 'MEDIA', 'BAJA'];
+    const counts = severidades.map(sev => ({
+      _id: sev,
+      count: alertas.filter(a => a.severity === sev).length
+    }));
+    return Promise.resolve(counts);
+  },
+  topLineasConAlertas: () => {
+    const conteo = {};
+    for (const a of alertas) {
+      if (!a.lineId || a.lineId === 'CERCANIAS') continue;
+      conteo[a.lineId] = (conteo[a.lineId] || 0) + 1;
+    }
+    const top = Object.entries(conteo)
+      .map(([lineId, count]) => ({ _id: lineId, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    return Promise.resolve(top);
+  },
   aggregate: () => Promise.resolve([{_id:'RENFE', count:alertas.filter(a=>a.source==='RENFE').length}]),
 };
 
@@ -222,4 +279,95 @@ const MockVehicleStatus = {
   },
 };
 
-module.exports = { MockTransitAlert, MockVehicleStatus, dbEvents, inicializar };
+const generarHorarioEstacion = (lineas = []) => {
+  const HEADWAYS_MINUTES = {
+    'C1': 15, 'C2': 15, 'C3': 15, 'C4': 10, 'C5': 10,
+    'C7': 15, 'C8': 15, 'C9': 60, 'C10': 30
+  };
+
+  const llegadas = [];
+  const nowMs = Date.now();
+  const now = new Date(nowMs);
+  const currentMinutesOfDay = now.getHours() * 60 + now.getMinutes();
+
+  // 1. Calcular el retraso promedio por línea basado en los vehículos reales
+  const retrasosPorLinea = {};
+  for (const v of vehiculos.values()) {
+    if (!retrasosPorLinea[v.lineId]) {
+      retrasosPorLinea[v.lineId] = { totalDelay: 0, count: 0 };
+    }
+    // Asumimos un retraso mínimo reportado por incidencias o simplemente la métrica delaySeconds
+    const delay = v.delaySeconds || 0;
+    retrasosPorLinea[v.lineId].totalDelay += delay;
+    retrasosPorLinea[v.lineId].count++;
+  }
+
+  const getRetrasoPromedioMinutos = (lineId) => {
+    if (!retrasosPorLinea[lineId] || retrasosPorLinea[lineId].count === 0) return 0;
+    const avgSec = retrasosPorLinea[lineId].totalDelay / retrasosPorLinea[lineId].count;
+    return Math.round(avgSec / 60);
+  };
+
+  // 2. Generar el horario de base
+  lineas.forEach(lineId => {
+    const headway = HEADWAYS_MINUTES[lineId] || 15;
+    const lineaInfo = LINEAS_CERCANIAS[lineId] || { nombre: 'Dirección A - Dirección B' };
+    const extremos = lineaInfo.nombre.split(' - ');
+    const extremoA = extremos[0] || 'Dirección A';
+    const extremoB = extremos[1] || 'Dirección B';
+    
+    // Retraso real inyectado (o un ligero factor aleatorio si el backend dice que hay alerta general)
+    let delayMinutos = getRetrasoPromedioMinutos(lineId);
+    
+    // Si la línea tiene alerta activa, sumamos un retraso artificial extra para que sea realista
+    const tieneAlerta = alertas.some(a => a.lineId === lineId && a.severity !== 'BAJA');
+    if (tieneAlerta && delayMinutos < 3) {
+      delayMinutos += Math.floor(Math.random() * 5) + 2; // +2 a 6 mins extras
+    }
+
+    // Ventana de 90 minutos hacia adelante
+    for (let m = currentMinutesOfDay; m < currentMinutesOfDay + 90; m++) {
+      if (m % headway === 0) {
+        // Alternar el destino (ej: Móstoles vs Fuenlabrada vs Humanes)
+        // Usamos m para ser deterministas y alternar
+        const esAlternativo = (m / headway) % 2 === 0;
+
+        let destA = extremoA;
+        if (lineId === 'C5' && destA === 'Humanes' && esAlternativo) destA = 'Fuenlabrada';
+
+        // Dirección A
+        const mStrA = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Math.floor(m / 60), m % 60).getTime();
+        llegadas.push({
+          lineId,
+          destino: destA,
+          sentido: extremoA, // Usamos el extremo principal como nombre de sentido
+          scheduledTime: mStrA,
+          realTime: mStrA + (delayMinutos * 60 * 1000),
+          retrasoMinutos: delayMinutos,
+          estado: delayMinutos > 2 ? 'RETRASO' : 'EN_HORA'
+        });
+
+        let destB = extremoB;
+        if (lineId === 'C5' && destB === 'Humanes' && !esAlternativo) destB = 'Fuenlabrada';
+
+        // Dirección B (desfasada a mitad de intervalo)
+        const mB = m + Math.floor(headway / 2);
+        const mStrB = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Math.floor(mB / 60), mB % 60).getTime();
+        llegadas.push({
+          lineId,
+          destino: destB,
+          sentido: extremoB, // Usamos el extremo principal como nombre de sentido
+          scheduledTime: mStrB,
+          realTime: mStrB + (delayMinutos * 60 * 1000),
+          retrasoMinutos: delayMinutos,
+          estado: delayMinutos > 2 ? 'RETRASO' : 'EN_HORA'
+        });
+      }
+    }
+  });
+  
+  // Ordenar por hora real de llegada
+  return llegadas.sort((a, b) => a.realTime - b.realTime).slice(0, 20); // Top 20 llegadas
+};
+
+module.exports = { MockTransitAlert, MockVehicleStatus, dbEvents, inicializar, generarHorarioEstacion };

@@ -108,24 +108,92 @@ const LINEAS_CERCANIAS = {
  * Devuelve un punto aleatorio interpolado a lo largo de la ruta de la línea.
  * Mucho más realista que un punto único aleatorio.
  * @param {string} lineId - Código de línea (C1, C2, ...)
+ * @param {string} vehicleId - ID del tren para espaciar
  * @returns {{ lat: number, lon: number }}
  */
-function getPuntoEnRuta(lineId) {
+function getPuntoEnRuta(lineId, vehicleId = '') {
   const linea = LINEAS_CERCANIAS[lineId];
   if (!linea || linea.puntos.length < 2) {
     return { lat: 40.4058 + (Math.random() - 0.5) * 0.05, lon: -3.6903 + (Math.random() - 0.5) * 0.05 };
   }
 
+  // Ciclo completo = 50 minutos (3000 segundos)
+  const cycleDuration = 3000;
+  const now = Math.floor(Date.now() / 1000);
+
+  // Seed basada en vehicleId para espaciarlos en la línea
+  let seed = 0;
+  for(let i=0; i<vehicleId.length; i++) {
+    seed = (seed * 31 + vehicleId.charCodeAt(i)) % cycleDuration;
+  }
+
+  // Posición a lo largo de la ruta (0 a 1)
+  const t = ((now + seed * 43) % cycleDuration) / cycleDuration;
+  
   const puntos = linea.puntos;
-  // Elegir un segmento aleatorio de la ruta
-  const segIdx = Math.floor(Math.random() * (puntos.length - 1));
+  const totalSegs = puntos.length - 1;
+  const segProgress = t * totalSegs;
+  const segIdx = Math.floor(segProgress);
+  const segT = segProgress - segIdx;
+  
   const p1 = puntos[segIdx];
   const p2 = puntos[segIdx + 1];
-  // Interpolar con un factor aleatorio entre 0 y 1
-  const t = Math.random();
+  
   return {
-    lat: p1.lat + (p2.lat - p1.lat) * t + (Math.random() - 0.5) * 0.005,
-    lon: p1.lon + (p2.lon - p1.lon) * t + (Math.random() - 0.5) * 0.005,
+    lat: p1.lat + (p2.lat - p1.lat) * segT,
+    lon: p1.lon + (p2.lon - p1.lon) * segT,
+  };
+}
+
+/**
+ * Devuelve un punto exacto en la ruta dado un progreso t (0 a 1) basándose en distancia real.
+ * @param {string} lineId 
+ * @param {number} t Progreso (0 a 1)
+ */
+function getPuntoExactoEnRuta(lineId, t) {
+  const linea = LINEAS_CERCANIAS[lineId];
+  if (!linea || linea.puntos.length < 2) {
+    return { lat: 40.4058, lon: -3.6903, enParada: false };
+  }
+
+  const puntos = linea.puntos;
+  let totalDist = 0;
+  const dists = [0];
+  
+  for (let i = 0; i < puntos.length - 1; i++) {
+    const p1 = puntos[i];
+    const p2 = puntos[i+1];
+    const d = Math.sqrt(Math.pow(p2.lat - p1.lat, 2) + Math.pow(p2.lon - p1.lon, 2));
+    totalDist += d;
+    dists.push(totalDist);
+  }
+  
+  const targetDist = t * totalDist;
+  
+  let segIdx = 0;
+  for (let i = 0; i < dists.length - 1; i++) {
+    if (targetDist >= dists[i] && targetDist <= dists[i+1]) {
+      segIdx = i;
+      break;
+    }
+  }
+  if (targetDist > dists[dists.length - 1]) segIdx = dists.length - 2;
+  
+  const segDist = dists[segIdx + 1] - dists[segIdx];
+  const segT = segDist === 0 ? 0 : (targetDist - dists[segIdx]) / segDist;
+  
+  const p1 = puntos[segIdx];
+  const p2 = puntos[segIdx + 1];
+
+  let distToP1 = targetDist - dists[segIdx];
+  let distToP2 = dists[segIdx + 1] - targetDist;
+  let minDistToStation = Math.min(distToP1, distToP2) / totalDist;
+  let enParada = minDistToStation < 0.03; // ~3% de la longitud total es la zona de parada
+
+  return {
+    lat: p1.lat + (p2.lat - p1.lat) * segT,
+    lon: p1.lon + (p2.lon - p1.lon) * segT,
+    enParada
   };
 }
 
@@ -152,15 +220,31 @@ function extraerLineaDeDescripcion(desc) {
  * @returns {'ALTA'|'MEDIA'|'BAJA'}
  */
 function clasificarSeveridad(desc) {
-  if (!desc) return 'BAJA';
-  const lower = desc.toLowerCase();
-  if (lower.match(/avarí|avería|accidente|suprimid|cortad|interrumpid|cancelad|retraso.*minutos|demora.*(\d{2,})/)) {
-    return 'ALTA';
-  }
-  if (lower.match(/obras|reajuste|retraso|demora|modificad|alterado|sin servicio/)) {
-    return 'MEDIA';
-  }
-  return 'BAJA';
+  if (desc.match(/interrumpid|corte|suspendid/i)) return 'ALTA';
+  if (desc.match(/retrasos? (importante|fuerte|grave)/i)) return 'ALTA';
+  if (desc.match(/retrasos/i)) return 'MEDIA';
+  if (desc.match(/aver[ií]a/i)) return 'ALTA';
+  if (desc.match(/obras|informaci[oó]n|modificaci[oó]n|alternativo/i)) return 'BAJA';
+  return 'MEDIA';
 }
 
-module.exports = { LINEAS_CERCANIAS, getPuntoEnRuta, extraerLineaDeDescripcion, clasificarSeveridad };
+// Calcula distancia Haversine en km entre dos coordenadas
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radio de la Tierra en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+module.exports = {
+  LINEAS_CERCANIAS,
+  getPuntoEnRuta,
+  getPuntoExactoEnRuta,
+  extraerLineaDeDescripcion,
+  clasificarSeveridad,
+  haversineDistance
+};

@@ -196,16 +196,7 @@ export default function LiveMap({ vehiculos, alertas, vehiculoFocal }: LiveMapPr
                     </span>
                     {tieneAlerta && <span className="mtp-popup-alert-badge">⚠️ ALERTA</span>}
                   </div>
-
                   <div className="mtp-popup-metrics">
-                    <div>
-                      <span>🏎️</span>
-                      <span>{vehiculo.speedKmh?.toFixed(0) ?? '—'} km/h</span>
-                    </div>
-                    <div>
-                      <span>👥</span>
-                      <span>{vehiculo.occupancyPct != null ? `${vehiculo.occupancyPct}% ocupación` : '— ocupación'}</span>
-                    </div>
                     {vehiculo.delaySeconds != null && (
                       <div>
                         <span>⏱️</span>

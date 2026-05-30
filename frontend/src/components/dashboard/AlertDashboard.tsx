@@ -112,11 +112,7 @@ const AlertCard = ({ alerta, esNueva, onClick }: AlertCardProps) => {
               ⏱ +{Math.floor(alerta.delaySeconds / 60)}m {alerta.delaySeconds % 60}s
             </span>
           )}
-          {alerta.speedKmh !== undefined && (
-            <span className="mtp-metric">
-              🏎️ {alerta.speedKmh.toFixed(0)} km/h
-            </span>
-          )}
+
           <span className="mtp-metric mtp-metric--vehicle">
             🆔 {alerta.vehicleId}
           </span>

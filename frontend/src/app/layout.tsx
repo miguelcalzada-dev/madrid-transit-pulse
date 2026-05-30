@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('http://localhost:3000'),
   title: 'Cercanías Madrid — Monitor en Tiempo Real',
   description:
     'Sistema de monitorización en tiempo real de la red Cercanías Madrid (Renfe). ' +
@@ -25,6 +26,7 @@ export const viewport: Viewport = {
 };
 
 import Navigation from '@/components/Navigation';
+import ConsoleSuppressor from '@/components/ConsoleSuppressor';
 
 export default function RootLayout({
   children,
@@ -50,6 +52,7 @@ export default function RootLayout({
         />
       </head>
       <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', margin: 0, overflow: 'hidden' }}>
+        <ConsoleSuppressor />
         <Navigation />
         <div style={{ flex: 1, overflow: 'hidden', paddingTop: '56px' }}>
           {children}

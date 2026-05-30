@@ -2,6 +2,7 @@
 const nextConfig = {
   // Habilita el App Router de Next.js 14
   experimental: {},
+  reactStrictMode: false,
 
   // Configuración de variables de entorno públicas (accesibles en el cliente)
   env: {

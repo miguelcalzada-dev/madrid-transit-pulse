@@ -57,7 +57,8 @@ export const useTransitData = (lineIdFiltro?: string): TransitDataState => {
       
       // Para el estado inicial, reemplazamos completamente las listas
       if (evento.tipo === 'estado_inicial') {
-        const filteredAlertas = evento.alertas.filter(a => new Date(a.detectedAt).getTime() > cutoff);
+        const alertCutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 horas para incidencias
+        const filteredAlertas = evento.alertas.filter(a => new Date(a.detectedAt).getTime() > alertCutoff);
         const sourceVehiculos = evento.vehiculos || prev.vehiculos;
         const filteredVehiculos = sourceVehiculos.filter(v => new Date(v.lastSeenAt).getTime() > cutoff);
         
@@ -76,10 +77,11 @@ export const useTransitData = (lineIdFiltro?: string): TransitDataState => {
       const idsNuevas = new Set(nuevasAlertas.map((a: TransitAlert) => a._id));
       const alertasAnteriores = prev.alertas.filter(a => !idsNuevas.has(a._id));
 
+      const alertCutoff = Date.now() - 24 * 60 * 60 * 1000;
       const alertasActualizadas = [
         ...nuevasAlertas,
         ...alertasAnteriores,
-      ].filter(a => new Date(a.detectedAt).getTime() > cutoff).slice(0, MAX_ALERTAS_EN_MEMORIA);
+      ].filter(a => new Date(a.detectedAt).getTime() > alertCutoff).slice(0, MAX_ALERTAS_EN_MEMORIA);
 
       return {
         ...prev,
