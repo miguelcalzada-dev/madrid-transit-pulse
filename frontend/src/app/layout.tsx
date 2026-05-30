@@ -54,6 +54,18 @@ export default function RootLayout({
         <div style={{ flex: 1, overflow: 'hidden', paddingTop: '56px' }}>
           {children}
         </div>
+        <footer style={{
+          fontSize: '0.55rem',
+          color: '#94a3b8',
+          textAlign: 'center',
+          padding: '0.3rem 0.5rem',
+          background: '#f8fafc',
+          borderTop: '1px solid #e2e8f0',
+          flexShrink: 0,
+          zIndex: 9000,
+        }}>
+          Datos provistos por <strong>Renfe Open Data</strong> y <strong>CRTM</strong>. Aplicación no oficial.
+        </footer>
       </body>
     </html>
   );
