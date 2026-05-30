@@ -117,7 +117,8 @@ function EstacionDetalle({ estacion, onClose }: { estacion: Estacion; onClose: (
 
   const fetchLlegadas = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/estaciones/llegadas?lat=${estacion.lat}&lon=${estacion.lon}&lineas=${estacion.lineas.join(',')}`);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+      const res = await fetch(`${API_URL}/estaciones/llegadas?lat=${estacion.lat}&lon=${estacion.lon}&lineas=${estacion.lineas.join(',')}`);
       const data = await res.json();
       if (data.ok) {
         setLlegadasReales(data.llegadas);
