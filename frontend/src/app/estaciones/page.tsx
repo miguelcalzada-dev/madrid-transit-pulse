@@ -349,11 +349,13 @@ export default function EstacionesPage() {
 
   const estacionesFiltradas = useMemo(() => {
     if (!query.trim()) return ESTACIONES;
-    const q = query.toLowerCase();
+    // Normalizar: quitar tildes/acentos para buscar sin necesidad de tildes
+    const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const q = norm(query);
     return ESTACIONES.filter(e =>
-      e.nombre.toLowerCase().includes(q) ||
+      norm(e.nombre).includes(q) ||
       e.lineas.some(l => l.toLowerCase().includes(q)) ||
-      e.municipio?.toLowerCase().includes(q)
+      norm(e.municipio ?? '').includes(q)
     );
   }, [query]);
 
