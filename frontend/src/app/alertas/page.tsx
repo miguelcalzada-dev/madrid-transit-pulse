@@ -28,7 +28,8 @@ const SEV_CONFIG = {
 type SevFilter = 'TODAS' | 'ALTA' | 'MEDIA' | 'BAJA';
 
 export default function AlertasPage() {
-  const { alertas, conectado, ultimaActualizacion } = useTransitData();
+  const { alertas: rawAlertas, conectado, ultimaActualizacion } = useTransitData();
+  const alertas = useMemo(() => rawAlertas.filter(a => a.lineId !== 'CERCANIAS'), [rawAlertas]);
   const [lineFilter, setLineFilter] = useState('TODAS');
   const [sevFilter, setSevFilter] = useState<SevFilter>('TODAS');
   const [search, setSearch] = useState('');
@@ -36,10 +37,8 @@ export default function AlertasPage() {
   // Obtener líneas únicas para los filtros (solo las que tienen incidencias)
   const lineas = useMemo(() => {
     const s = new Set(alertas.map(a => a.lineId));
-    const list = Array.from(s).filter(l => l && l !== 'CERCANIAS').sort();
-    const finalLines = ['TODAS', ...list];
-    if (s.has('CERCANIAS')) finalLines.push('CERCANIAS');
-    return finalLines;
+    const list = Array.from(s).filter(Boolean).sort();
+    return ['TODAS', ...list];
   }, [alertas]);
 
   // Filtrar alertas
@@ -69,10 +68,8 @@ export default function AlertasPage() {
       if (!groups[a.lineId]) groups[a.lineId] = [];
       groups[a.lineId].push(a);
     }
-    // Ordenar: primero líneas específicas, luego CERCANIAS; dentro de cada grupo: ALTA primero
+    // Ordenar: alfabéticamente; dentro de cada grupo: ALTA primero
     const order = Object.entries(groups).sort(([a], [b]) => {
-      if (a === 'CERCANIAS') return 1;
-      if (b === 'CERCANIAS') return -1;
       return a.localeCompare(b);
     });
     order.forEach(([, list]) => list.sort((a, b) => {

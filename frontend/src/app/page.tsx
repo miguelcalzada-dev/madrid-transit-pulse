@@ -17,7 +17,8 @@ interface HistoryPoint {
 }
 
 export default function DashboardPage() {
-  const { alertas, vehiculos, stats, conectado, ultimaActualizacion, error } = useTransitData();
+  const { alertas: rawAlertas, vehiculos, stats, conectado, ultimaActualizacion, error } = useTransitData();
+  const alertas = useMemo(() => rawAlertas.filter(a => a.lineId !== 'CERCANIAS'), [rawAlertas]);
   const [lineFilter, setLineFilter] = useState('ALL');
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 
