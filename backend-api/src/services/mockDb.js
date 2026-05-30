@@ -127,12 +127,17 @@ const consultarAlertasRenfe = async () => {
         : 'Cercanías Madrid';
       const severidadAlerta = clasificarSeveridad(desc);
 
+      // Conservar la fecha original si la incidencia ya existía
+      const idStr = `renfe_alert_${ent.id}`;
+      const alertaExistente = alertas.find(a => a._id === idStr || a.description === desc);
+      const fechaDetectado = alertaExistente?.detectedAt || (alert.activePeriod?.[0]?.start ? new Date(alert.activePeriod[0].start * 1000).toISOString() : new Date().toISOString());
+
       nuevasAlertas.push({
-        _id: `renfe_alert_${ent.id}`,
+        _id: idStr,
         vehicleId: null, lineId: lineIdAlerta, lineName: lineNameAlerta, source: 'RENFE',
         alertType: 'incidencia_oficial', description: desc, severity: severidadAlerta,
         latitude: 40.4058, longitude: -3.6920, speedKmh: 0, delaySeconds: 0,
-        detectedAt: new Date().toISOString(), processedAt: new Date().toISOString(), createdAt: new Date().toISOString(),
+        detectedAt: fechaDetectado, processedAt: new Date().toISOString(), createdAt: alertaExistente?.createdAt || fechaDetectado,
       });
     }
     
