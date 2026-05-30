@@ -35,7 +35,7 @@ export default function KpiBar({ vehiculos, alertas, stats, conectado, lineFilte
     {
       label: 'Incidencias activas',
       value: filteredAlerts.length,
-      sub: `${stats?.alertasPorSeveridad?.ALTA ?? 0} alta severidad`,
+      sub: `${filteredAlerts.filter(a => a.severity === 'ALTA').length} alta severidad`,
       icon: AlertTriangle,
       accent: filteredAlerts.length > 10 ? '#dc2626' : filteredAlerts.length > 5 ? '#d97706' : '#16a34a',
     },
