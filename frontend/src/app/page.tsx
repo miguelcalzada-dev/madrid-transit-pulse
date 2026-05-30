@@ -47,7 +47,7 @@ export default function DashboardPage() {
       };
       
       const next = [...prev, point];
-      return next.length > 20 ? next.slice(-20) : next;
+      return next.length > 100 ? next.slice(-100) : next;
     });
   }, [vehiculos, alertas]);
 

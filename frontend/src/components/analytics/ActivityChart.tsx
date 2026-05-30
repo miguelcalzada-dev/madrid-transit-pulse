@@ -30,7 +30,7 @@ export default function ActivityChart({ history }: ActivityChartProps) {
     <div className="chart-card" style={{ height: '100%' }}>
       <div className="chart-card__header">
         <div className="chart-card__title">📈 Actividad en tiempo real</div>
-        <span className="chart-card__badge">Últimos 20 ciclos</span>
+        <span className="chart-card__badge">Últimos 100 ciclos</span>
       </div>
 
       {history.length < 2 ? (
