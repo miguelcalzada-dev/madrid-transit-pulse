@@ -2,7 +2,7 @@
 
 import { VehicleData, TransitAlert, SystemStats } from '@/types/transit';
 import { useMemo } from 'react';
-import { Train, AlertTriangle, Zap, Activity, Clock } from 'lucide-react';
+import { Train, AlertTriangle, Activity, Clock } from 'lucide-react';
 
 interface KpiBarProps {
   vehiculos: VehicleData[];
@@ -43,11 +43,11 @@ export default function KpiBar({ vehiculos, alertas, stats, conectado, lineFilte
       accent: parseInt(pctEnRuta) > 70 ? '#16a34a' : '#d97706',
     },
     {
-      label: 'Conexión',
-      value: conectado ? 'EN VIVO' : 'OFFLINE',
-      sub: conectado ? 'Telemetría activa' : 'Reconectando...',
+      label: 'Con retraso',
+      value: filtered.filter(v => (v.delaySeconds || 0) > 60).length,
+      sub: `${filtered.filter(v => (v.delaySeconds || 0) > 180).length} retrasos graves`,
       icon: Clock,
-      accent: conectado ? '#16a34a' : '#dc2626',
+      accent: '#dc2626',
     },
   ];
 

@@ -117,17 +117,18 @@ export const useTransitData = (lineIdFiltro?: string): TransitDataState => {
   // Ciclo de vida de la conexión WebSocket y Ventana Móvil
   // ----------------------------------------------------------
 
-  // Cleanup periodico (ventana móvil 30 mins)
+  // Cleanup periodico (vehículos: 30 min, alertas: 24h)
   useEffect(() => {
     const interval = setInterval(() => {
       setEstado(prev => {
-        const cutoff = Date.now() - 30 * 60 * 1000;
+        const vehiculoCutoff = Date.now() - 30 * 60 * 1000;  // 30 min para vehículos
+        const alertCutoff = Date.now() - 24 * 60 * 60 * 1000; // 24h para alertas
         let changed = false;
         
-        const filteredAlertas = prev.alertas.filter(a => new Date(a.detectedAt).getTime() > cutoff);
+        const filteredAlertas = prev.alertas.filter(a => new Date(a.detectedAt).getTime() > alertCutoff);
         if (filteredAlertas.length !== prev.alertas.length) changed = true;
         
-        const filteredVehiculos = prev.vehiculos.filter(v => new Date(v.lastSeenAt).getTime() > cutoff);
+        const filteredVehiculos = prev.vehiculos.filter(v => new Date(v.lastSeenAt).getTime() > vehiculoCutoff);
         if (filteredVehiculos.length !== prev.vehiculos.length) changed = true;
         
         if (!changed) return prev;
@@ -138,7 +139,7 @@ export const useTransitData = (lineIdFiltro?: string): TransitDataState => {
           vehiculos: filteredVehiculos,
         };
       });
-    }, 60000); // 1 minuto
+    }, 60000);
     
     return () => clearInterval(interval);
   }, []);

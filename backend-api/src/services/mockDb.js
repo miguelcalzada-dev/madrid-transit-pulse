@@ -165,11 +165,15 @@ const consultarAlertasRenfe = async () => {
       const alertaExistente = alertas.find(a => a._id === idStr || a.description === desc);
       const fechaDetectado = alertaExistente?.detectedAt || (alert.activePeriod?.[0]?.start ? new Date(alert.activePeriod[0].start * 1000).toISOString() : new Date().toISOString());
 
+      // Usar coordenadas representativas de la línea, no siempre Atocha
+      const coordsLinea = LINEAS_CERCANIAS[lineIdAlerta]?.puntos?.[Math.floor(LINEAS_CERCANIAS[lineIdAlerta].puntos.length / 2)]
+        || { lat: 40.4168, lon: -3.7038 }; // Fallback: Sol (centroide de la red)
+
       nuevasAlertas.push({
         _id: idStr,
         vehicleId: null, lineId: lineIdAlerta, lineName: lineNameAlerta, source: 'RENFE',
         alertType: 'incidencia_oficial', description: desc, severity: severidadAlerta,
-        latitude: 40.4058, longitude: -3.6920, speedKmh: 0, delaySeconds: 0,
+        latitude: coordsLinea.lat, longitude: coordsLinea.lon, speedKmh: 0, delaySeconds: 0,
         detectedAt: fechaDetectado, processedAt: new Date().toISOString(), createdAt: alertaExistente?.createdAt || fechaDetectado,
       });
     }
@@ -233,10 +237,21 @@ const MockTransitAlert = {
     for (const [key, val] of Object.entries(filtro)) {
       res = res.filter(a => a[key] === val);
     }
-    return {
-      sort: () => ({ limit: (n) => ({ lean: () => Promise.resolve(res.slice(0, n)) }) }),
-      lean: () => Promise.resolve(res),
+    const builder = {
+      _sorted: res,
+      _skip: 0,
+      _limit: res.length,
+      sort(sortArg) {
+        if (sortArg && sortArg.detectedAt === -1) {
+          this._sorted = [...this._sorted].sort((a, b) => new Date(b.detectedAt) - new Date(a.detectedAt));
+        }
+        return this;
+      },
+      skip(n) { this._skip = n || 0; return this; },
+      limit(n) { this._limit = n || this._sorted.length; return this; },
+      lean() { return Promise.resolve(this._sorted.slice(this._skip, this._skip + this._limit)); },
     };
+    return builder;
   },
   countDocuments: (filtro = {}) => {
     let res = alertas;
@@ -280,15 +295,21 @@ const MockVehicleStatus = {
 };
 
 const generarHorarioEstacion = (lineas = []) => {
-  const HEADWAYS_MINUTES = {
-    'C1': 15, 'C2': 15, 'C3': 15, 'C4': 10, 'C5': 10,
-    'C7': 15, 'C8': 15, 'C9': 60, 'C10': 30
-  };
-
   const llegadas = [];
   const nowMs = Date.now();
   const now = new Date(nowMs);
   const currentMinutesOfDay = now.getHours() * 60 + now.getMinutes();
+
+  // Headways reales según franja horaria (Renfe Cercanías Madrid)
+  const horaActual = now.getHours();
+  const esHoraPunta = (horaActual >= 7 && horaActual <= 9) || (horaActual >= 17 && horaActual <= 20);
+  const esNocheOrMadrugada = horaActual < 6 || horaActual >= 23;
+
+  const HEADWAYS_PUNTA   = { 'C1': 10, 'C2': 10, 'C3': 10, 'C4':  5, 'C5':  7, 'C7': 10, 'C8': 20, 'C9': 60, 'C10': 20 };
+  const HEADWAYS_NORMAL  = { 'C1': 15, 'C2': 15, 'C3': 20, 'C4': 10, 'C5': 10, 'C7': 15, 'C8': 30, 'C9': 60, 'C10': 30 };
+  const HEADWAYS_NOCHE   = { 'C1': 30, 'C2': 30, 'C3': 30, 'C4': 20, 'C5': 20, 'C7': 30, 'C8': 60, 'C9': 120, 'C10': 60 };
+
+  const HEADWAYS_MINUTES = esHoraPunta ? HEADWAYS_PUNTA : esNocheOrMadrugada ? HEADWAYS_NOCHE : HEADWAYS_NORMAL;
 
   // 1. Calcular el retraso promedio por línea basado en los vehículos reales
   const retrasosPorLinea = {};
@@ -319,10 +340,10 @@ const generarHorarioEstacion = (lineas = []) => {
     // Retraso real inyectado (o un ligero factor aleatorio si el backend dice que hay alerta general)
     let delayMinutos = getRetrasoPromedioMinutos(lineId);
     
-    // Si la línea tiene alerta activa, sumamos un retraso artificial extra para que sea realista
-    const tieneAlerta = alertas.some(a => a.lineId === lineId && a.severity !== 'BAJA');
-    if (tieneAlerta && delayMinutos < 3) {
-      delayMinutos += Math.floor(Math.random() * 5) + 2; // +2 a 6 mins extras
+    // Si la línea tiene alerta activa de alta severidad, añadimos 3 minutos fijos de margen
+    const tieneAlertaAlta = alertas.some(a => a.lineId === lineId && a.severity === 'ALTA');
+    if (tieneAlertaAlta && delayMinutos < 3) {
+      delayMinutos = 3;
     }
 
     // Ventana de 90 minutos hacia adelante

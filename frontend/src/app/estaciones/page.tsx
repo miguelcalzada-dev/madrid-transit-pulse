@@ -72,31 +72,26 @@ function HorarioProgramado({ horario }: { horario: { lineId: string, destino: st
       background: '#fff', border: '1px solid #e2e8f0',
       marginBottom: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
     }}>
-      <div style={{ textAlign: 'center', minWidth: '55px' }}>
-        <div style={{ fontSize: displayFaltan === 0 ? '0.9rem' : '1.2rem', fontWeight: 800, color: displayFaltan === 0 ? '#16a34a' : (isDelayed ? '#dc2626' : '#16a34a'), lineHeight: 1 }}>
+      <div style={{ minWidth: '60px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ fontSize: displayFaltan === 0 ? '0.9rem' : '1.3rem', fontWeight: 800, color: displayFaltan === 0 ? '#16a34a' : (isDelayed ? '#dc2626' : '#16a34a'), lineHeight: 1 }}>
           {displayFaltan === 0 ? 'En andén' : displayFaltan > 59 ? realStr : `${displayFaltan} min`}
         </div>
-        <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '0.2rem' }}>
-          {isDelayed ? (
-            <>
-              <span style={{ textDecoration: 'line-through', marginRight: '4px', opacity: 0.6 }}>{schedStr}</span>
-              <span style={{ color: '#dc2626' }}>{realStr}</span>
-            </>
-          ) : (
-            <span style={{ color: '#16a34a' }}>{schedStr}</span>
-          )}
+        <div style={{ fontSize: '0.65rem', color: isDelayed ? '#dc2626' : '#16a34a', fontWeight: 600, marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '2px' }}>
+          <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: 'currentColor', opacity: 0.8, animation: 'pulse-dot 2s infinite' }} />
+          {isDelayed ? `${horario.retrasoMinutos} min de retraso` : 'En hora'}
         </div>
       </div>
-      <div style={{ width: '1px', height: '30px', background: '#e2e8f0', flexShrink: 0 }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+      <div style={{ width: '1px', height: '35px', background: '#e2e8f0', flexShrink: 0 }} />
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
           <LineaBadge lineaId={horario.lineId} />
-          <span style={{ fontSize: '0.8rem', color: '#334155', fontWeight: 600 }}>
-            → {horario.destino}
+          <span style={{ fontSize: '0.85rem', color: '#0f172a', fontWeight: 700 }}>
+            {horario.destino}
           </span>
         </div>
-        <div style={{ fontSize: '0.65rem', color: isDelayed ? '#dc2626' : '#64748b', marginTop: '0.2rem', fontWeight: isDelayed ? 600 : 400 }}>
-          {isDelayed ? `Retraso de ${horario.retrasoMinutos} min` : 'En hora'}
+        <div style={{ fontSize: '0.7rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          Programado: <span style={{ textDecoration: isDelayed ? 'line-through' : 'none' }}>{schedStr}</span>
+          {isDelayed && <span style={{ color: '#dc2626', fontWeight: 600 }}>{realStr}</span>}
         </div>
       </div>
     </div>

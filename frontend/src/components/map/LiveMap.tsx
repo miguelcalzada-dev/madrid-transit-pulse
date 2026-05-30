@@ -73,14 +73,41 @@ const crearIconoLinea = (lineId: string, estaEnAlerta: boolean): L.DivIcon => {
 
 // Estaciones fijas de Cercanías Madrid
 const ESTACIONES_RENFE = [
-  { lat: 40.4143, lon: -3.7194, nombre: 'Príncipe Pío', lineas: 'C1, C10' },
-  { lat: 40.4720, lon: -3.6795, nombre: 'Chamartín',    lineas: 'C1–C10' },
-  { lat: 40.4058, lon: -3.6903, nombre: 'Atocha',        lineas: 'C1–C10' },
+  // Nodos principales
+  { lat: 40.4721, lon: -3.6795, nombre: 'Chamartín', lineas: 'C1-C10' },
+  { lat: 40.4058, lon: -3.6903, nombre: 'Atocha', lineas: 'C1-C10' },
+  { lat: 40.4168, lon: -3.7038, nombre: 'Sol', lineas: 'C3, C4' },
   { lat: 40.4530, lon: -3.6910, nombre: 'Nuevos Ministerios', lineas: 'C1, C4, C10' },
-  { lat: 40.4168, lon: -3.7038, nombre: 'Sol',            lineas: 'C3, C4' },
-  { lat: 40.4650, lon: -3.7200, nombre: 'Pozuelo',        lineas: 'C10' },
-  { lat: 40.3225, lon: -3.8650, nombre: 'Móstoles',       lineas: 'C5, C7' },
+  { lat: 40.4143, lon: -3.7194, nombre: 'Príncipe Pío', lineas: 'C1, C10' },
+  // C1
+  { lat: 40.4975, lon: -3.5691, nombre: 'Aeropuerto T4', lineas: 'C1' },
+  { lat: 40.4830, lon: -3.6070, nombre: 'Barajas', lineas: 'C1' },
+  { lat: 40.4760, lon: -3.6400, nombre: 'Hortaleza', lineas: 'C1' },
+  // C2
+  { lat: 40.6300, lon: -3.1750, nombre: 'Guadalajara', lineas: 'C2' },
   { lat: 40.5500, lon: -3.4000, nombre: 'Alcalá de Henares', lineas: 'C2, C7' },
+  { lat: 40.5260, lon: -3.4800, nombre: 'Meco', lineas: 'C2' },
+  { lat: 40.4975, lon: -3.5800, nombre: 'Torrejón de Ardoz', lineas: 'C2' },
+  { lat: 40.4880, lon: -3.6100, nombre: 'Coslada', lineas: 'C2' },
+  // C3
+  { lat: 40.5900, lon: -4.1200, nombre: 'El Escorial', lineas: 'C3' },
+  { lat: 40.4589, lon: -3.8690, nombre: 'Las Rozas', lineas: 'C3, C8' },
+  { lat: 40.2500, lon: -3.5900, nombre: 'Aranjuez', lineas: 'C3' },
+  // C4
+  { lat: 40.5500, lon: -3.6400, nombre: 'Alcobendas', lineas: 'C4' },
+  { lat: 40.3300, lon: -3.7500, nombre: 'Getafe', lineas: 'C4' },
+  { lat: 40.2420, lon: -3.7730, nombre: 'Parla', lineas: 'C4' },
+  // C5
+  { lat: 40.2350, lon: -3.8800, nombre: 'Humanes', lineas: 'C5' },
+  { lat: 40.2820, lon: -3.8750, nombre: 'Móstoles El Soto', lineas: 'C5' },
+  { lat: 40.3225, lon: -3.8650, nombre: 'Móstoles', lineas: 'C5, C7' },
+  { lat: 40.3860, lon: -3.8100, nombre: 'Fuenlabrada', lineas: 'C5' },
+  // C8 / C10
+  { lat: 40.6600, lon: -4.0100, nombre: 'Villalba', lineas: 'C8, C10' },
+  { lat: 40.4650, lon: -3.7200, nombre: 'Pozuelo', lineas: 'C10' },
+  // C9
+  { lat: 40.7570, lon: -4.0540, nombre: 'Cercedilla', lineas: 'C9' },
+  { lat: 40.8700, lon: -4.0500, nombre: 'Cotos', lineas: 'C9' },
 ];
 
 // Actualiza cámara cuando cambia vehiculoFocal

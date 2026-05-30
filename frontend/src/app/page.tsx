@@ -18,7 +18,7 @@ interface HistoryPoint {
 
 export default function DashboardPage() {
   const { alertas: rawAlertas, vehiculos, stats, conectado, ultimaActualizacion, error } = useTransitData();
-  const alertas = useMemo(() => rawAlertas.filter(a => a.lineId !== 'CERCANIAS'), [rawAlertas]);
+  const alertas = useMemo(() => rawAlertas, [rawAlertas]);
   const [lineFilter, setLineFilter] = useState('ALL');
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 
@@ -71,7 +71,10 @@ export default function DashboardPage() {
 
   const alertsPerLine = useMemo(() => {
     const m: Record<string, number> = {};
-    alertas.forEach(a => { m[a.lineId] = (a.lineId && a.lineId !== 'CERCANIAS' ? (m[a.lineId] || 0) + 1 : m[a.lineId] || 0); });
+    alertas.forEach(a => {
+      if (!a.lineId || a.lineId === 'CERCANIAS') return;
+      m[a.lineId] = (m[a.lineId] || 0) + 1;
+    });
     return m;
   }, [alertas]);
 

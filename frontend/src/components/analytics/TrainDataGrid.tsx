@@ -17,7 +17,7 @@ const LINE_COLORS: Record<string, { bg: string; text: string; border: string }> 
   C10: { bg: '#eff6ff', text: '#1e40af', border: '#93c5fd' },
 };
 
-type SortKey = 'vehicleId' | 'lineId' | 'speedKmh' | 'vehicleStatus' | 'delaySeconds' | 'occupancyPct';
+type SortKey = 'vehicleId' | 'lineId' | 'vehicleStatus' | 'delaySeconds';
 type SortDir = 'asc' | 'desc';
 
 interface TrainDataGridProps {

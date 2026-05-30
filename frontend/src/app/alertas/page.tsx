@@ -29,7 +29,7 @@ type SevFilter = 'TODAS' | 'ALTA' | 'MEDIA' | 'BAJA';
 
 export default function AlertasPage() {
   const { alertas: rawAlertas, conectado, ultimaActualizacion } = useTransitData();
-  const alertas = useMemo(() => rawAlertas.filter(a => a.lineId !== 'CERCANIAS'), [rawAlertas]);
+  const alertas = useMemo(() => rawAlertas, [rawAlertas]);
   const [lineFilter, setLineFilter] = useState('TODAS');
   const [sevFilter, setSevFilter] = useState<SevFilter>('TODAS');
   const [search, setSearch] = useState('');
