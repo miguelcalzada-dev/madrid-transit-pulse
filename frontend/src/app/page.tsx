@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransitData } from '@/hooks/useTransitData';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import KpiBar from '@/components/analytics/KpiBar';
 import LineBarChart from '@/components/analytics/LineBarChart';
@@ -17,8 +17,7 @@ interface HistoryPoint {
 }
 
 export default function DashboardPage() {
-  const { alertas: rawAlertas, vehiculos, stats, conectado, ultimaActualizacion, error } = useTransitData();
-  const alertas = useMemo(() => rawAlertas, [rawAlertas]);
+  const { alertas, vehiculos, stats, conectado, ultimaActualizacion, error } = useTransitData();
   const [lineFilter, setLineFilter] = useState('ALL');
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 

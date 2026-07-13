@@ -107,14 +107,14 @@ function EstacionDetalle({ estacion, onClose }: { estacion: Estacion; onClose: (
 
   // The 'trenesRelevantes' estimation block has been removed in favor of the official timetable.
 
-  const [llegadasReales, setLlegadasReales] = useState<{ lineId: string, destino: string, sentido: string, scheduledTime: number, realTime: number, retrasoMinutos: number, estado: string }[]>([]);
+  const [llegadasReales, setLlegadasReales] = useState<{ lineId: string, destino: string, sentido: string, scheduledTime: number, realTime: number, retrasoMinutos: number, estado: string, tripId?: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchLlegadas = useCallback(async () => {
     try {
       const rawApiUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/$/, '');
       const API_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
-      const res = await fetch(`${API_URL}/estaciones/llegadas?lat=${estacion.lat}&lon=${estacion.lon}&lineas=${estacion.lineas.join(',')}`);
+      const res = await fetch(`${API_URL}/estaciones/llegadas?estacionId=${encodeURIComponent(estacion.id)}`);
       const data = await res.json();
       if (data.ok) {
         setLlegadasReales(data.llegadas);
@@ -193,8 +193,8 @@ function EstacionDetalle({ estacion, onClose }: { estacion: Estacion; onClose: (
         )}
 
         {/* Flat list sin agrupar por sentido */}
-        {llegadasReales.map((v, i) => (
-          <HorarioProgramado key={i} horario={v} />
+        {llegadasReales.map(v => (
+          <HorarioProgramado key={`${v.tripId}-${v.lineId}-${v.realTime}`} horario={v} />
         ))}
       </div>
     </div>

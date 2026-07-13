@@ -89,8 +89,8 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: madridpulse2024
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-madridpulse2024}
       MONGO_INITDB_DATABASE: madrid_transit
     volumes:
       - mongodb_data:/data/db
@@ -116,10 +116,10 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: madridpulse2024
-      ME_CONFIG_MONGODB_URL: mongodb://admin:madridpulse2024@mongodb:27017/
-      ME_CONFIG_BASICAUTH: false
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGOEXPRESS_USER:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGOEXPRESS_PASSWORD:-madridpulse2024}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGOEXPRESS_USER:-admin}:${MONGOEXPRESS_PASSWORD:-madridpulse2024}@mongodb:27017/
+      ME_CONFIG_BASICAUTH: ${ME_CONFIG_BASICAUTH:-true}
     networks:
       - mtp-network
 

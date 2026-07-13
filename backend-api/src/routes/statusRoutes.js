@@ -13,7 +13,7 @@ const express = require('express');
  * @param {object} VehicleStatus - Repositorio de vehículos
  * @returns {express.Router}
  */
-module.exports = function buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion) {
+module.exports = function buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion, gtfsService) {
   const router = express.Router();
   const logger  = require('../config/logger');
 
@@ -215,23 +215,34 @@ module.exports = function buildRoutes(TransitAlert, VehicleStatus, generarHorari
 
   // ----------------------------------------------------------
   // GET /api/estaciones/llegadas
+  // Devuelve los próximos trenes en una estación con tiempos reales
+  // del feed GTFS-RT de Renfe (misma fuente que Google Maps).
+  //
+  // Parámetros:
+  //   estacionId (requerido) — ID interno de la estación (ej: 'ATOCHA')
+  //   lat, lon   (opcionales, ignorados; mantenidos por retrocompatibilidad)
   // ----------------------------------------------------------
   router.get('/estaciones/llegadas', async (req, res) => {
     try {
-      const lat = parseFloat(req.query.lat);
-      const lon = parseFloat(req.query.lon);
-      const lineas = req.query.lineas ? req.query.lineas.split(',') : [];
+      const { estacionId } = req.query;
 
-      if (!lat || !lon) {
-        return res.status(400).json({ ok: false, error: 'Faltan parámetros lat y lon' });
+      if (!estacionId) {
+        return res.status(400).json({ ok: false, error: 'Falta el parámetro estacionId' });
       }
 
-      if (typeof generarHorarioEstacion === 'function') {
-        const llegadas = generarHorarioEstacion(lineas);
-        res.json({ ok: true, timestamp: new Date().toISOString(), llegadas });
-      } else {
-        res.json({ ok: true, llegadas: [] });
+      if (gtfsService) {
+        // Usar el servicio real GTFS-RT
+        const llegadas = gtfsService.getLlegadasParaEstacion(estacionId);
+        return res.json({
+          ok: true,
+          timestamp: new Date().toISOString(),
+          fuente: 'GTFS-RT Renfe',
+          llegadas,
+        });
       }
+
+      // Fallback si gtfsService no está disponible (no debería ocurrir)
+      res.json({ ok: true, llegadas: [] });
     } catch (err) {
       logger.error(`[GET /estaciones/llegadas] ${err.message}`);
       res.status(500).json({ ok: false, error: err.message });

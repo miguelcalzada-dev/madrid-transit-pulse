@@ -1,0 +1,566 @@
+{
+  "10000": {
+    "nombre": "Madrid-Príncipe Pío",
+    "id": "PRINCIPE_PIO",
+    "lat": 40.4214895,
+    "lon": -3.7189689
+  },
+  "10001": {
+    "nombre": "Aravaca",
+    "id": "ARAVACA",
+    "lat": 40.4484551,
+    "lon": -3.7855547
+  },
+  "10002": {
+    "nombre": "Pozuelo",
+    "id": "POZUELO",
+    "lat": 40.4474569,
+    "lon": -3.8002779
+  },
+  "10005": {
+    "nombre": "Las Rozas",
+    "id": "LAS_ROZAS",
+    "lat": 40.4942887,
+    "lon": -3.8681747
+  },
+  "10007": {
+    "nombre": "Majadahonda",
+    "id": "MAJADAHONDA",
+    "lat": 40.4742885,
+    "lon": -3.8462931
+  },
+  "10010": {
+    "nombre": "El Barrial-Centro Comercial Pozuelo",
+    "id": "EL_BARRIAL",
+    "lat": 40.4653918,
+    "lon": -3.8076854
+  },
+  "10100": {
+    "nombre": "Pinar de las Rozas",
+    "id": "PINAR",
+    "lat": 40.5222672,
+    "lon": -3.8822477
+  },
+  "10101": {
+    "nombre": "Las Matas",
+    "id": "LAS_MATAS",
+    "lat": 40.5523869,
+    "lon": -3.8967664
+  },
+  "10103": {
+    "nombre": "Torrelodones",
+    "id": "TORRELODONES",
+    "lat": 40.574554,
+    "lon": -3.9566013
+  },
+  "10104": {
+    "nombre": "Galapagar-La Navata",
+    "id": "GALAPAGAR_LA_NAVATA",
+    "lat": 40.6003138,
+    "lon": -3.982259
+  },
+  "10200": {
+    "nombre": "Villalba de Guadarrama",
+    "id": "VILLALBA",
+    "lat": 40.6264893,
+    "lon": -4.0080301
+  },
+  "10201": {
+    "nombre": "San Yago",
+    "id": "SAN_YAGO",
+    "lat": 40.6178953,
+    "lon": -4.0310749
+  },
+  "10202": {
+    "nombre": "Las Zorreras-Navalquejigo",
+    "id": "LAS_ZORRERAS",
+    "lat": 40.6093116,
+    "lon": -4.0463626
+  },
+  "10203": {
+    "nombre": "El Escorial",
+    "id": "EL_ESCORIAL",
+    "lat": 40.5853675,
+    "lon": -4.1324053
+  },
+  "10204": {
+    "nombre": "Zarzalejo",
+    "id": "ZARZALEJO",
+    "lat": 40.5389272,
+    "lon": -4.1580662
+  },
+  "10205": {
+    "nombre": "Robledo de Chavela",
+    "id": "ROBLEDO_CHAVELA",
+    "lat": 40.5208244,
+    "lon": -4.2467592
+  },
+  "10206": {
+    "nombre": "Santa María de la Alameda-Peguerinos",
+    "id": "SANTA_MARIA_ALAMEDA",
+    "lat": 40.569001,
+    "lon": -4.2691255
+  },
+  "12001": {
+    "nombre": "Los Negrales",
+    "id": "LOS_NEGRALES",
+    "lat": 40.638567,
+    "lon": -4.0218746
+  },
+  "12002": {
+    "nombre": "Alpedrete",
+    "id": "ALPEDRETE",
+    "lat": 40.6581044,
+    "lon": -4.0349719
+  },
+  "12004": {
+    "nombre": "Collado Mediano",
+    "id": "COLLADO_MEDIANO",
+    "lat": 40.6928982,
+    "lon": -4.0359271
+  },
+  "12005": {
+    "nombre": "Los Molinos-Guadarrama",
+    "id": "LOS_MOLINOS",
+    "lat": 40.7066407,
+    "lon": -4.0671991
+  },
+  "12006": {
+    "nombre": "Cercedilla",
+    "id": "CERCEDILLA",
+    "lat": 40.7376129,
+    "lon": -4.0662985
+  },
+  "12020": {
+    "nombre": "Puerto de Navacerrada",
+    "id": "PUERTO_NAVACERRADA",
+    "lat": 40.7844678,
+    "lon": -4.0047744
+  },
+  "12023": {
+    "nombre": "Los Cotos",
+    "id": "COTOS",
+    "lat": 40.8223419,
+    "lon": -3.9644961
+  },
+  "17000": {
+    "nombre": "Madrid-Chamartín-Clara Campoamor",
+    "id": "CHAMARTIN",
+    "lat": 40.4711789,
+    "lon": -3.6829524
+  },
+  "17001": {
+    "nombre": "Fuencarral",
+    "id": "FUENCARRAL",
+    "lat": 40.5015603,
+    "lon": -3.6825042
+  },
+  "17003": {
+    "nombre": "El Goloso",
+    "id": "EL_GOLOSO",
+    "lat": 40.5588966,
+    "lon": -3.7139714
+  },
+  "17004": {
+    "nombre": "Tres Cantos",
+    "id": "TRES_CANTOS",
+    "lat": 40.5987417,
+    "lon": -3.7155585
+  },
+  "17005": {
+    "nombre": "Colmenar Viejo",
+    "id": "COLMENAR_VIEJO",
+    "lat": 40.6452094,
+    "lon": -3.7766142
+  },
+  "17009": {
+    "nombre": "Universidad-Cantoblanco",
+    "id": "CANTOBLANCO_U",
+    "lat": 40.5438416,
+    "lon": -3.7001551
+  },
+  "18000": {
+    "nombre": "Madrid-Atocha Cercanías",
+    "id": "ATOCHA",
+    "lat": 40.4066191,
+    "lon": -3.6894391
+  },
+  "18001": {
+    "nombre": "Madrid-Recoletos",
+    "id": "RECOLETOS",
+    "lat": 40.4233731,
+    "lon": -3.690931
+  },
+  "18002": {
+    "nombre": "Madrid-Nuevos Ministerios",
+    "id": "NUEVOS_MINISTERIOS",
+    "lat": 40.4466271,
+    "lon": -3.6923468
+  },
+  "18003": {
+    "nombre": "Méndez Álvaro P.V.",
+    "id": "MENDEZ_ALVARO",
+    "lat": 40.3957768,
+    "lon": -3.677844
+  },
+  "18004": {
+    "nombre": "Delicias",
+    "id": "DELICIAS",
+    "lat": 40.4004375,
+    "lon": -3.6927766
+  },
+  "18005": {
+    "nombre": "Pirámides",
+    "id": "PIRAMIDES",
+    "lat": 40.4025341,
+    "lon": -3.7113623
+  },
+  "18101": {
+    "nombre": "Sol",
+    "id": "SOL",
+    "lat": 40.4168665,
+    "lon": -3.7028765
+  },
+  "19001": {
+    "nombre": "Universidad Pontificia de Comillas",
+    "id": "VALDELASFUENTES",
+    "lat": 40.5539697,
+    "lon": -3.6836997
+  },
+  "19002": {
+    "nombre": "Valdelasfuentes",
+    "id": "VALDELASFUENTES",
+    "lat": 40.5474339,
+    "lon": -3.6543237
+  },
+  "19003": {
+    "nombre": "Alcobendas-San Sebastián de los Reyes",
+    "id": "ALCOBENDAS_SANSE",
+    "lat": 40.5465765,
+    "lon": -3.6351731
+  },
+  "35001": {
+    "nombre": "Leganés",
+    "id": "LEGANES",
+    "lat": 40.328643,
+    "lon": -3.7713161
+  },
+  "35002": {
+    "nombre": "Fuenlabrada",
+    "id": "FUENLABRADA",
+    "lat": 40.2833784,
+    "lon": -3.7994429
+  },
+  "35009": {
+    "nombre": "Zarzaquemada",
+    "id": "ZARZAQUEMADA",
+    "lat": 40.3408526,
+    "lon": -3.7482632
+  },
+  "35010": {
+    "nombre": "La Serna-Fuenlabrada",
+    "id": "LA_SERNA",
+    "lat": 40.2968173,
+    "lon": -3.7926235
+  },
+  "35011": {
+    "nombre": "Parque Polvoranca",
+    "id": "PARQUE_POLVORANCA",
+    "lat": 40.3125738,
+    "lon": -3.7834937
+  },
+  "35012": {
+    "nombre": "Humanes",
+    "id": "HUMANES_C4",
+    "lat": 40.2558101,
+    "lon": -3.8287055
+  },
+  "35600": {
+    "nombre": "Aluche",
+    "id": "ALUCHE",
+    "lat": 40.3856677,
+    "lon": -3.7607343
+  },
+  "35601": {
+    "nombre": "Maestra Justa Freire-Polidep. Aluche",
+    "id": "FANJUL",
+    "lat": 40.3836379,
+    "lon": -3.7686869
+  },
+  "35602": {
+    "nombre": "Las Águilas",
+    "id": "LAS_AGUILAS",
+    "lat": 40.381022,
+    "lon": -3.7801636
+  },
+  "35603": {
+    "nombre": "Cuatro Vientos",
+    "id": "CUATRO_VIENTOS",
+    "lat": 40.3777651,
+    "lon": -3.79151
+  },
+  "35604": {
+    "nombre": "San José de Valderas",
+    "id": "SAN_JOSE_VALDERAS",
+    "lat": 40.356613,
+    "lon": -3.815573
+  },
+  "35605": {
+    "nombre": "Alcorcón",
+    "id": "ALCORCON",
+    "lat": 40.3502269,
+    "lon": -3.8317018
+  },
+  "35606": {
+    "nombre": "Móstoles",
+    "id": "MOSTOLES",
+    "lat": 40.3286626,
+    "lon": -3.8636221
+  },
+  "35607": {
+    "nombre": "Móstoles-El Soto",
+    "id": "MOSTOLES_EL_SOTO",
+    "lat": 40.331064,
+    "lon": -3.882456
+  },
+  "35608": {
+    "nombre": "Laguna",
+    "id": "LAGUNA",
+    "lat": 40.3990603,
+    "lon": -3.7442305
+  },
+  "35609": {
+    "nombre": "Embajadores",
+    "id": "EMBAJADORES",
+    "lat": 40.4046484,
+    "lon": -3.702579
+  },
+  "35610": {
+    "nombre": "Las Retamas",
+    "id": "LAS_RETAMAS",
+    "lat": 40.3421153,
+    "lon": -3.8424636
+  },
+  "35702": {
+    "nombre": "Doce de Octubre",
+    "id": "DOCE_OCTUBRE",
+    "lat": 40.378921,
+    "lon": -3.6986988
+  },
+  "35703": {
+    "nombre": "Orcasitas",
+    "id": "ORCASITAS",
+    "lat": 40.3671021,
+    "lon": -3.7042307
+  },
+  "35704": {
+    "nombre": "Puente Alcocer",
+    "id": "PUENTE_ALCOCER",
+    "lat": 40.3504482,
+    "lon": -3.7051154
+  },
+  "37001": {
+    "nombre": "Madrid-Villaverde Alto",
+    "id": "VILLAVERDE_ALTO",
+    "lat": 40.3415895,
+    "lon": -3.7123508
+  },
+  "37002": {
+    "nombre": "Getafe-Centro",
+    "id": "GETAFE_CENTRAL",
+    "lat": 40.3100045,
+    "lon": -3.7339878
+  },
+  "37010": {
+    "nombre": "Las Margaritas",
+    "id": "LAS_MARGARITAS",
+    "lat": 40.3230989,
+    "lon": -3.7272863
+  },
+  "37011": {
+    "nombre": "Getafe-Sector 3",
+    "id": "GETAFE_SECTOR_3",
+    "lat": 40.2883893,
+    "lon": -3.7374991
+  },
+  "37012": {
+    "nombre": "Parla",
+    "id": "PARLA",
+    "lat": 40.2410986,
+    "lon": -3.7692699
+  },
+  "60100": {
+    "nombre": "Madrid-Villaverde Bajo",
+    "id": "VILLAVERDE_BAJO",
+    "lat": 40.3526762,
+    "lon": -3.6838977
+  },
+  "60101": {
+    "nombre": "San Cristóbal Industrial",
+    "id": "SAN_CRISTOBAL_IND",
+    "lat": 40.3318587,
+    "lon": -3.69896
+  },
+  "60102": {
+    "nombre": "Getafe-Industrial",
+    "id": "GETAFE_IND",
+    "lat": 40.3057176,
+    "lon": -3.7078359
+  },
+  "60103": {
+    "nombre": "Pinto",
+    "id": "PINTO",
+    "lat": 40.2428555,
+    "lon": -3.7035303
+  },
+  "60104": {
+    "nombre": "Valdemoro",
+    "id": "VALDEMORO",
+    "lat": 40.1960779,
+    "lon": -3.6649372
+  },
+  "60105": {
+    "nombre": "Ciempozuelos",
+    "id": "CIEMPOZUELOS",
+    "lat": 40.1592011,
+    "lon": -3.6101851
+  },
+  "60107": {
+    "nombre": "San Cristóbal de los Ángeles",
+    "id": "SAN_CRISTOBAL_IND",
+    "lat": 40.3424144,
+    "lon": -3.6839795
+  },
+  "60200": {
+    "nombre": "Aranjuez",
+    "id": "ARANJUEZ",
+    "lat": 40.0350257,
+    "lon": -3.6182534
+  },
+  "70001": {
+    "nombre": "Vallecas",
+    "id": "VALLECAS",
+    "lat": 40.3819607,
+    "lon": -3.6245835
+  },
+  "70002": {
+    "nombre": "Asamblea de Madrid-Entrevías",
+    "id": "ASAMBLEA_MADRID_ENTREVIAS",
+    "lat": 40.3818618,
+    "lon": -3.6680454
+  },
+  "70003": {
+    "nombre": "El Pozo",
+    "id": "EL_POZO",
+    "lat": 40.3760377,
+    "lon": -3.6561407
+  },
+  "70100": {
+    "nombre": "Vicálvaro",
+    "id": "VICALVARO",
+    "lat": 40.4012524,
+    "lon": -3.595897
+  },
+  "70101": {
+    "nombre": "San Fernando de Henares",
+    "id": "SAN_FERNANDO",
+    "lat": 40.4427805,
+    "lon": -3.5339866
+  },
+  "70102": {
+    "nombre": "Torrejón de Ardoz",
+    "id": "TORREJON",
+    "lat": 40.4547895,
+    "lon": -3.47973
+  },
+  "70103": {
+    "nombre": "Alcalá de Henares",
+    "id": "ALCALA_HENARES",
+    "lat": 40.4890814,
+    "lon": -3.3662457
+  },
+  "70104": {
+    "nombre": "Meco",
+    "id": "MECO",
+    "lat": 40.5346731,
+    "lon": -3.2986806
+  },
+  "70105": {
+    "nombre": "Azuqueca",
+    "id": "AZUQUECA",
+    "lat": 40.561077,
+    "lon": -3.265397
+  },
+  "70107": {
+    "nombre": "Alcalá de Henares-Universidad",
+    "id": "ALCALA_HENARES_U",
+    "lat": 40.5054303,
+    "lon": -3.3353258
+  },
+  "70108": {
+    "nombre": "Coslada",
+    "id": "COSLADA_CENTRAL",
+    "lat": 40.423237,
+    "lon": -3.5611109
+  },
+  "70109": {
+    "nombre": "Santa Eugenia",
+    "id": "SANTA_EUGENIA",
+    "lat": 40.3869545,
+    "lon": -3.6089855
+  },
+  "70111": {
+    "nombre": "La Garena",
+    "id": "LA_GARENA",
+    "lat": 40.4805448,
+    "lon": -3.3930055
+  },
+  "70112": {
+    "nombre": "Soto del Henares",
+    "id": "SOTO_HENARES",
+    "lat": 40.463964,
+    "lon": -3.4414076
+  },
+  "70200": {
+    "nombre": "Guadalajara",
+    "id": "GUADALAJARA",
+    "lat": 40.6441928,
+    "lon": -3.1822602
+  },
+  "97100": {
+    "nombre": "Pitis",
+    "id": "PITIS",
+    "lat": 40.4954173,
+    "lon": -3.7261603
+  },
+  "97200": {
+    "nombre": "Mirasierra-Paco de Lucía",
+    "id": "MIRASIERRA_PACO_LUCIA",
+    "lat": 40.499759,
+    "lon": -3.7092505
+  },
+  "97201": {
+    "nombre": "Madrid-Ramón y Cajal",
+    "id": "RAMÓN_Y_CAJAL",
+    "lat": 40.4881473,
+    "lon": -3.6948037
+  },
+  "98003": {
+    "nombre": "Fuente de la Mora",
+    "id": "FUENTE_LA_MORA",
+    "lat": 40.48472,
+    "lon": -3.6630608
+  },
+  "98304": {
+    "nombre": "Valdebebas",
+    "id": "VALDEBEBAS",
+    "lat": 40.4821016,
+    "lon": -3.6162874
+  },
+  "98305": {
+    "nombre": "Madrid-Aeropuerto T4",
+    "id": "AEROPUERTO_T4",
+    "lat": 40.4924023,
+    "lon": -3.5932297
+  }
+}

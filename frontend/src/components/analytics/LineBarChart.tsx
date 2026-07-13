@@ -6,13 +6,7 @@ import {
 } from 'recharts';
 import { VehicleData, TransitAlert } from '@/types/transit';
 import { useMemo } from 'react';
-
-const LINE_COLORS: Record<string, string> = {
-  C1: '#e8614c', C2: '#4d9bd9', C3: '#f39c27', C4: '#6db33f',
-  C5: '#9b59b6', C7: '#e74c3c', C8: '#1abc9c', C9: '#7f8c8d', C10: '#2980b9',
-};
-
-const LINE_ORDER = ['C1', 'C2', 'C3', 'C4', 'C5', 'C7', 'C8', 'C9', 'C10'];
+import { LINE_CHART_COLORS, LINE_ORDER } from '@/data/lineColors';
 
 interface LineBarChartProps {
   vehiculos: VehicleData[];
@@ -30,7 +24,7 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
     }
     return LINE_ORDER
       .filter(l => counts[l] !== undefined)
-      .map(l => ({ linea: l, trenes: counts[l] || 0, color: LINE_COLORS[l] || '#64748b' }));
+      .map(l => ({ linea: l, trenes: counts[l] || 0, color: LINE_CHART_COLORS[l] || '#64748b' }));
   }, [vehiculos]);
 
 
@@ -44,7 +38,7 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
     return Object.entries(counts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 9)
-      .map(([linea, count]) => ({ linea, count, color: LINE_COLORS[linea] || '#dc2626' }));
+      .map(([linea, count]) => ({ linea, count, color: LINE_CHART_COLORS[linea] || '#dc2626' }));
   }, [alertas]);
 
   const tooltipStyle = {

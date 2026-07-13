@@ -3,16 +3,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { LayoutDashboard, Map as MapIcon, AlertTriangle, Train, Menu, X, MapPin } from 'lucide-react';
+import { LayoutDashboard, AlertTriangle, Train, Menu, X, MapPin } from 'lucide-react';
 
 export default function Navigation() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/', label: 'Menú', icon: LayoutDashboard },
     { href: '/estaciones', label: 'Estaciones', icon: MapPin },
-    { href: '/mapa', label: 'Mapa en Vivo', icon: MapIcon },
     { href: '/alertas', label: 'Incidencias', icon: AlertTriangle },
   ];
 
@@ -56,7 +55,7 @@ export default function Navigation() {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="desktop-flex" style={{ gap: '0.25rem' }}>
+        <div className="desktop-flex" style={{ gap: '0.25rem', flex: 1, justifyContent: 'center' }}>
           {navLinks.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
@@ -90,6 +89,7 @@ export default function Navigation() {
         {/* Mobile Hamburger Button */}
         <button 
           className="mobile-flex" 
+          aria-label="Abrir menú de navegación"
           style={{ background: 'none', border: 'none', color: '#0f172a', padding: '0.4rem' }}
           onClick={() => setIsOpen(true)}
         >
@@ -116,6 +116,7 @@ export default function Navigation() {
               </div>
             </div>
             <button 
+              aria-label="Cerrar menú de navegación"
               style={{ background: '#f1f5f9', border: 'none', borderRadius: '50%', padding: '0.5rem', display: 'flex' }}
               onClick={() => setIsOpen(false)}
             >

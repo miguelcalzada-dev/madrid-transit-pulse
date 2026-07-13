@@ -71,6 +71,9 @@ app.use(morgan('dev', {
 // Importar módulos del dominio (mock o real)
 let TransitAlert, VehicleStatus, dbEvents, generarHorarioEstacion;
 
+// gtfsService: tiempos reales GTFS-RT (independiente del modo mock/real)
+const gtfsService = require('./services/gtfsService');
+
 // generarHorarioEstacion siempre se carga desde mockDb (es un cálculo puro de horarios, no necesita BD)
 const { generarHorarioEstacion: _generarHorarioEstacion } = require('./services/mockDb');
 
@@ -96,7 +99,10 @@ app.locals.VehicleStatus = VehicleStatus;
 
 // Rutas REST
 const buildRoutes = require('./routes/statusRoutes');
-app.use('/api', buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion));
+app.use('/api', buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion, gtfsService));
+
+// Inicializar servicio GTFS-RT (asíncrono, no bloquea el arranque)
+gtfsService.inicializar().catch(err => logger.error(`[GTFS] Error en init: ${err.message}`));
 
 // Ruta raíz
 app.get('/', (req, res) => res.json({
@@ -149,6 +155,7 @@ httpServer.listen(PORT, () => {
 // Graceful shutdown
 const apagar = () => {
   logger.info('🛑 Apagando servidor...');
+  gtfsService.detener();
   detenerSocketServer();
   httpServer.close(() => { logger.info('✅ Apagado limpio'); process.exit(0); });
   setTimeout(() => process.exit(1), 8000);

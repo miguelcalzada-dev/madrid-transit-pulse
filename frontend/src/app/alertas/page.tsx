@@ -4,20 +4,8 @@ import { useTransitData } from '@/hooks/useTransitData';
 import { useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { AlertTriangle, Filter } from 'lucide-react';
-
-const LINE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  C1:  { bg: '#fef2f2', text: '#b91c1c', border: '#fca5a5' },
-  C2:  { bg: '#eff6ff', text: '#1d4ed8', border: '#93c5fd' },
-  C3:  { bg: '#fff7ed', text: '#c2410c', border: '#fdba74' },
-  C4:  { bg: '#f0fdf4', text: '#15803d', border: '#86efac' },
-  C5:  { bg: '#faf5ff', text: '#7e22ce', border: '#d8b4fe' },
-  C7:  { bg: '#fef2f2', text: '#991b1b', border: '#fca5a5' },
-  C8:  { bg: '#ecfdf5', text: '#065f46', border: '#6ee7b7' },
-  C9:  { bg: '#f8fafc', text: '#475569', border: '#cbd5e1' },
-  C10: { bg: '#eff6ff', text: '#1e40af', border: '#93c5fd' },
-  CERCANIAS: { bg: '#fef2f2', text: '#991b1b', border: '#fca5a5' },
-};
+import { Filter } from 'lucide-react';
+import { LINE_COLORS, getLineColor } from '@/data/lineColors';
 
 const SEV_CONFIG = {
   ALTA:  { label: 'Alta',  color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
@@ -28,8 +16,7 @@ const SEV_CONFIG = {
 type SevFilter = 'TODAS' | 'ALTA' | 'MEDIA' | 'BAJA';
 
 export default function AlertasPage() {
-  const { alertas: rawAlertas, conectado, ultimaActualizacion } = useTransitData();
-  const alertas = useMemo(() => rawAlertas, [rawAlertas]);
+  const { alertas, conectado, ultimaActualizacion } = useTransitData();
   const [lineFilter, setLineFilter] = useState('TODAS');
   const [sevFilter, setSevFilter] = useState<SevFilter>('TODAS');
   const [search, setSearch] = useState('');
@@ -208,7 +195,7 @@ export default function AlertasPage() {
         </div>
       ) : (
         agrupadas.map(([lineId, listaAlertas]) => {
-          const lc = LINE_COLORS[lineId] || LINE_COLORS.CERCANIAS;
+          const lc = getLineColor(lineId);
           return (
             <div key={lineId} style={{ marginBottom: '1.5rem' }}>
               {/* Cabecera de grupo */}

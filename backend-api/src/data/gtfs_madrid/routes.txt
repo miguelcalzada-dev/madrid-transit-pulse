@@ -1,0 +1,110 @@
+route_id,route_short_name,route_long_name,route_type,route_color,route_text_color                                                                     
+10T0001C1  ,C1  ,Principe Pio                            -Aeropuerto-T4                           ,2,75B6E0,FFFFFF                                    
+10T0002C1  ,C1  ,Aeropuerto-T4                           -Principe Pio                            ,2,75B6E0,FFFFFF                                    
+10T0003C10 ,C10 ,Villalba                                -Aeropuerto-T4                           ,2,BCCF00,FFFFFF                                    
+10T0004C10 ,C10 ,Aeropuerto-T4                           -Villalba                                ,2,BCCF00,FFFFFF                                    
+10T0005C2  ,C2  ,Guadalajara                             -Chamartín - Clara Campoamor             ,2,00943D,FFFFFF                                    
+10T0006C2  ,C2  ,Chamartín - Clara Campoamor             -Guadalajara                             ,2,00943D,FFFFFF                                    
+10T0007C3  ,C3  ,Chamartín - Clara Campoamor             -Aranjuez                                ,2,952585,FFFFFF                                    
+10T0008C3  ,C3  ,Aranjuez                                -Chamartín - Clara Campoamor             ,2,952585,FFFFFF                                    
+10T0009C8a ,C8a ,Chamartín - Clara Campoamor             -El Escorial                             ,2,868584,FFFFFF                                    
+10T0010C8a ,C8a ,El Escorial                             -Chamartín - Clara Campoamor             ,2,868584,FFFFFF                                    
+10T0011C4  ,C4  ,Chamartín - Clara Campoamor             -Parla                                   ,2,2C2A86,FFFFFF                                    
+10T0012C4  ,C4  ,Parla                                   -Chamartín - Clara Campoamor             ,2,2C2A86,FFFFFF                                    
+10T0013C4a ,C4a ,Alcobendas-S.Sebast. de los Reyes       -Parla                                   ,2,2C2A86,FFFFFF                                    
+10T0014C4a ,C4a ,Parla                                   -Alcobendas-S.Sebast. de los Reyes       ,2,2C2A86,FFFFFF                                    
+10T0015C4b ,C4b ,Colmenar Viejo                          -Parla                                   ,2,2C2A86,FFFFFF                                    
+10T0016C4b ,C4b ,Parla                                   -Colmenar Viejo                          ,2,2C2A86,FFFFFF                                    
+10T0017C5  ,C5  ,Mostoles el Soto                        -Humanes                                 ,2,FECB00,FFFFFF                                    
+10T0018C5  ,C5  ,Humanes                                 -Mostoles el Soto                        ,2,FECB00,FFFFFF                                    
+10T0019C2  ,C2  ,Alcala de Henares                       -Principe Pio                            ,2,00943D,FFFFFF                                    
+10T0020C2  ,C2  ,Principe Pio                            -Alcala de Henares                       ,2,00943D,FFFFFF                                    
+10T0021C8b ,C8b ,Atocha                                  -Cercedilla                              ,2,868584,FFFFFF                                    
+10T0022C8b ,C8b ,Cercedilla                              -Atocha                                  ,2,868584,FFFFFF                                    
+10T0023C8a ,C8a ,Atocha                                  -El Escorial                             ,2,868584,FFFFFF                                    
+10T0024C8a ,C8a ,El Escorial                             -Atocha                                  ,2,868584,FFFFFF                                    
+10T0025C9  ,C9  ,Cercedilla                              -Cotos                                   ,2,915419,FFFFFF                                    
+10T0026C9  ,C9  ,Cotos                                   -Cercedilla                              ,2,915419,FFFFFF                                    
+10T0027C8a ,C8a ,Atocha                                  -El Escorial                             ,2,868584,FFFFFF                                    
+10T0028C8a ,C8a ,El Escorial                             -Atocha                                  ,2,868584,FFFFFF                                    
+10T0029C3  ,C3  ,Aranjuez                                -                                        ,2,952585,FFFFFF                                    
+10T0030C3  ,C3  ,                                        -Aranjuez                                ,2,952585,FFFFFF                                    
+10T0031C2  ,C2  ,Guadalajara                             -                                        ,2,00943D,FFFFFF                                    
+10T0032C2  ,C2  ,                                        -Guadalajara                             ,2,00943D,FFFFFF                                    
+10T0033C3  ,C3  ,                                        -                                        ,2,952585,FFFFFF                                    
+10T0034C3  ,C3  ,                                        -                                        ,2,952585,FFFFFF                                    
+10T0035C5  ,C5  ,                                        -Fuenlabrada                             ,2,FECB00,FFFFFF                                    
+10T0036C5  ,C5  ,Fuenlabrada                             -                                        ,2,FECB00,FFFFFF                                    
+10T0037C2  ,C2  ,Alcala de Henares                       -Nuevos Ministerios                      ,2,00943D,FFFFFF                                    
+10T0038C2  ,C2  ,Nuevos Ministerios                      -Alcala de Henares                       ,2,00943D,FFFFFF                                    
+10T0039C8  ,C8  ,Principe Pio                            -                                        ,2,868584,FFFFFF                                    
+10T0040C8  ,C8  ,                                        -Principe Pio                            ,2,868584,FFFFFF                                    
+10T0041C8  ,C8  ,Principe Pio                            -                                        ,2,868584,FFFFFF                                    
+10T0042C8  ,C8  ,                                        -Principe Pio                            ,2,868584,FFFFFF                                    
+10T0043C8  ,C8  ,Principe Pio                            -                                        ,2,868584,FFFFFF                                    
+10T0044C8  ,C8  ,                                        -Principe Pio                            ,2,868584,FFFFFF                                    
+10T0045C8  ,C8  ,Principe Pio                            -                                        ,2,868584,FFFFFF                                    
+10T0046C8  ,C8  ,                                        -Principe Pio                            ,2,868584,FFFFFF                                    
+10T0047C5  ,C5  ,Atocha                                  -Fuenlabrada                             ,2,FECB00,FFFFFF                                    
+10T0048C5  ,C5  ,Fuenlabrada                             -Atocha                                  ,2,FECB00,FFFFFF                                    
+10T0049C2  ,C2  ,Guadalajara                             -Atocha                                  ,2,00943D,FFFFFF                                    
+10T0050C2  ,C2  ,Atocha                                  -Guadalajara                             ,2,00943D,FFFFFF                                    
+10T0051C7  ,C7  ,Principe Pio                            -Chamartín - Clara Campoamor             ,2,E5202A,FFFFFF                                    
+10T0052C7  ,C7  ,Chamartín - Clara Campoamor             -Principe Pio                            ,2,E5202A,FFFFFF                                    
+10T0053C7  ,C7  ,Principe Pio                            -Atocha                                  ,2,E5202A,FFFFFF                                    
+10T0054C7  ,C7  ,Atocha                                  -Principe Pio                            ,2,E5202A,FFFFFF                                    
+10T0057C7  ,C7  ,Principe Pio                            -Pinar de las Rozas                      ,2,E5202A,FFFFFF                                    
+10T0058C7  ,C7  ,Pinar de las Rozas                      -Principe Pio                            ,2,E5202A,FFFFFF                                    
+10T0059C7  ,C7  ,Chamartín - Clara Campoamor             -Alcala de Henares                       ,2,E5202A,FFFFFF                                    
+10T0060C7  ,C7  ,Alcala de Henares                       -Chamartín - Clara Campoamor             ,2,E5202A,FFFFFF                                    
+10T0061C8a ,C8a ,El Escorial                             -Chamartín - Clara Campoamor             ,2,868584,FFFFFF                                    
+10T0062C8a ,C8a ,Chamartín - Clara Campoamor             -El Escorial                             ,2,868584,FFFFFF                                    
+10T0063C10 ,C10 ,El Escorial                             -Principe Pio                            ,2,BCCF00,FFFFFF                                    
+10T0064C10 ,C10 ,Principe Pio                            -El Escorial                             ,2,BCCF00,FFFFFF                                    
+10T0065C1  ,C1  ,Atocha                                  -Chamartín - Clara Campoamor             ,2,75B6E0,FFFFFF                                    
+10T0066C1  ,C1  ,Chamartín - Clara Campoamor             -Atocha                                  ,2,75B6E0,FFFFFF                                    
+10T0067C4  ,C4  ,Atocha                                  -Villaverde Alto                         ,2,2C2A86,FFFFFF                                    
+10T0068C4  ,C4  ,Villaverde Alto                         -Atocha                                  ,2,2C2A86,FFFFFF                                    
+10T0069C8  ,C8  ,Las Matas                               -Villalba                                ,2,868584,FFFFFF                                    
+10T0070C8  ,C8  ,Villalba                                -Las Matas                               ,2,868584,FFFFFF                                    
+10T0071C10 ,C10 ,Pozuelo                                 -Pitis                                   ,2,BCCF00,FFFFFF                                    
+10T0072C10 ,C10 ,Pitis                                   -Pozuelo                                 ,2,BCCF00,FFFFFF                                    
+10T0073C7  ,C7  ,Guadalajara                             -Pozuelo                                 ,2,E5202A,FFFFFF                                    
+10T0074C7  ,C7  ,Pozuelo                                 -Guadalajara                             ,2,E5202A,FFFFFF                                    
+10T0075C10 ,C10 ,Torrelodones                            -Chamartín - Clara Campoamor             ,2,BCCF00,FFFFFF                                    
+10T0076C10 ,C10 ,Chamartín - Clara Campoamor             -Torrelodones                            ,2,BCCF00,FFFFFF                                    
+10T0077C10 ,C10 ,Las Matas                               -Atocha                                  ,2,BCCF00,FFFFFF                                    
+10T0078C10 ,C10 ,Atocha                                  -Las Matas                               ,2,BCCF00,FFFFFF                                    
+10T0079C7  ,C7  ,Pitis                                   -Nuevos Ministerios                      ,2,E5202A,FFFFFF                                    
+10T0080C7  ,C7  ,Nuevos Ministerios                      -Pitis                                   ,2,E5202A,FFFFFF                                    
+10T0081C2  ,C2  ,Guadalajara                             -                                        ,2,00943D,FFFFFF                                    
+10T0082C2  ,C2  ,                                        -Guadalajara                             ,2,00943D,FFFFFF                                    
+10T0083C2  ,C2  ,Guadalajara                             -                                        ,2,00943D,FFFFFF                                    
+10T0084C2  ,C2  ,                                        -Guadalajara                             ,2,00943D,FFFFFF                                    
+10T0085C8a ,C8a ,                                        -El Escorial                             ,2,868584,FFFFFF                                    
+10T0086C8a ,C8a ,El Escorial                             -                                        ,2,868584,FFFFFF                                    
+10T0087C8b ,C8b ,Chamartín - Clara Campoamor             -Cercedilla                              ,2,868584,FFFFFF                                    
+10T0088C8b ,C8b ,Cercedilla                              -Chamartín - Clara Campoamor             ,2,868584,FFFFFF                                    
+10T0089C8  ,C8  ,Chamartín - Clara Campoamor             -Cercedilla                              ,2,868584,FFFFFF                                    
+10T0090C8  ,C8  ,Cercedilla                              -Chamartín - Clara Campoamor             ,2,868584,FFFFFF                                    
+10T0091C8b ,C8b ,Chamartín - Clara Campoamor             -Cercedilla                              ,2,868584,FFFFFF                                    
+10T0092C8b ,C8b ,Cercedilla                              -Chamartín - Clara Campoamor             ,2,868584,FFFFFF                                    
+10T0093C10 ,C10 ,Pinar de las Rozas                      -Nuevos Ministerios                      ,2,BCCF00,FFFFFF                                    
+10T0094C10 ,C10 ,Nuevos Ministerios                      -Pinar de las Rozas                      ,2,BCCF00,FFFFFF                                    
+10T0095C4  ,C4  ,                                        -Tres Cantos                             ,2,2C2A86,FFFFFF                                    
+10T0096C4  ,C4  ,Tres Cantos                             -                                        ,2,2C2A86,FFFFFF                                    
+10T0097C8b ,C8b ,                                        -Cercedilla                              ,2,868584,FFFFFF                                    
+10T0098C8b ,C8b ,Cercedilla                              -                                        ,2,868584,FFFFFF                                    
+10T0099C3  ,C3  ,Villaverde Bajo                         -Getafe Industrial                       ,2,952585,FFFFFF                                    
+10T0100C3  ,C3  ,Getafe Industrial                       -Villaverde Bajo                         ,2,952585,FFFFFF                                    
+10T0101C5  ,C5  ,Mendez Alvaro PV                        -Villaverde Alto                         ,2,FECB00,FFFFFF                                    
+10T0102C5  ,C5  ,Villaverde Alto                         -Mendez Alvaro PV                        ,2,FECB00,FFFFFF                                    
+10T0103ER04,ER04,                                        -Guadalajara                             ,3,FFFFFF,FFFFFF                                    
+10T0104ER08,ER08,                                        -Guadalajara                             ,3,FFFFFF,FFFFFF                                    
+10T0105C9  ,C9  ,Cercedilla                              -Cotos                                   ,3,915419,FFFFFF                                    
+10T0106C9  ,C9  ,Cotos                                   -Cercedilla                              ,3,915419,FFFFFF                                    
+10T0107C8b ,C8b ,                                        -Cercedilla                              ,3,868584,FFFFFF                                    
+10T0108C3  ,C3  ,Getafe Industrial                       -Valdemoro                               ,3,952585,FFFFFF                                    
+10T0109C3  ,C3  ,Valdemoro                               -Getafe Industrial                       ,3,952585,FFFFFF                                    
+10T0110ER04,ER04,                                        -Guadalajara                             ,3,FFFFFF,FFFFFF                                    
+10T0111ER08,ER08,                                        -Guadalajara                             ,3,FFFFFF,FFFFFF                                    

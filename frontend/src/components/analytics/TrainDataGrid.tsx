@@ -3,19 +3,7 @@
 import { VehicleData } from '@/types/transit';
 import { useMemo, useState } from 'react';
 import { ChevronUp, ChevronDown, Search } from 'lucide-react';
-
-// Colores oficiales de las líneas Cercanías Madrid
-const LINE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  C1:  { bg: '#fef2f2', text: '#b91c1c', border: '#fca5a5' },
-  C2:  { bg: '#eff6ff', text: '#1d4ed8', border: '#93c5fd' },
-  C3:  { bg: '#fff7ed', text: '#c2410c', border: '#fdba74' },
-  C4:  { bg: '#f0fdf4', text: '#15803d', border: '#86efac' },
-  C5:  { bg: '#faf5ff', text: '#7e22ce', border: '#d8b4fe' },
-  C7:  { bg: '#fef2f2', text: '#991b1b', border: '#fca5a5' },
-  C8:  { bg: '#ecfdf5', text: '#065f46', border: '#6ee7b7' },
-  C9:  { bg: '#f8fafc', text: '#475569', border: '#cbd5e1' },
-  C10: { bg: '#eff6ff', text: '#1e40af', border: '#93c5fd' },
-};
+import { getLineColor } from '@/data/lineColors';
 
 type SortKey = 'vehicleId' | 'lineId' | 'vehicleStatus' | 'delaySeconds';
 type SortDir = 'asc' | 'desc';
@@ -106,7 +94,7 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
           </thead>
           <tbody>
             {visible.map(v => {
-              const lc = LINE_COLORS[v.lineId] || { bg: '#f8fafc', text: '#475569', border: '#e2e8f0' };
+              const lc = getLineColor(v.lineId);
               const st = statusLabel(v.vehicleStatus);
               const hasAlert = v.tieneAlerta;
               return (
