@@ -19,6 +19,16 @@ const nextConfig = {
   images: {
     domains: [],
   },
+
+  // Las URLs antiguas (madrid-transit-pulse.vercel.app) redirigen al dominio nuevo.
+  // basePath: false evita el prefijo para no interferir con el proxy del portal.
+  async redirects() {
+    return [
+      { source: '/', destination: 'https://miguelcalzada.com/madrid-transit', permanent: true, basePath: false },
+      { source: '/estaciones', destination: 'https://miguelcalzada.com/madrid-transit/estaciones', permanent: true, basePath: false },
+      { source: '/alertas', destination: 'https://miguelcalzada.com/madrid-transit/alertas', permanent: true, basePath: false },
+    ];
+  },
 };
 
 module.exports = nextConfig;
