@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Se sirve bajo https://miguelcalzada.com/madrid-transit
+  basePath: '/madrid-transit',
+
   // Habilita el App Router de Next.js 14
   experimental: {},
   reactStrictMode: false,

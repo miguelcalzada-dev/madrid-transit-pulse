@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL('https://miguelcalzada.com'),
+  alternates: { canonical: 'https://miguelcalzada.com/madrid-transit' },
   title: 'Cercanías Madrid — Monitor en Tiempo Real',
   description:
     'Sistema de monitorización en tiempo real de la red Cercanías Madrid (Renfe). ' +

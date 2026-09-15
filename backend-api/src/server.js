@@ -34,14 +34,17 @@ const app = express();
 
 app.use(helmet({ contentSecurityPolicy: false }));
 
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003').split(',').map(o => o.trim());
+const DEFAULT_CORS_ORIGINS = 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://miguelcalzada.com,https://www.miguelcalzada.com,https://miguelcalzada.es,https://www.miguelcalzada.es';
+const allowedOrigins = (process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS).split(',').map(o => o.trim());
+
+const DOMINIOS_PROPIOS = ['https://miguelcalzada.com', 'https://www.miguelcalzada.com', 'https://miguelcalzada.es', 'https://www.miguelcalzada.es'];
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (curl, Postman, server-to-server)
     if (!origin) return callback(null, true);
     // Allow *.vercel.app domains and any configured origin
-    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
+    if (allowedOrigins.includes(origin) || DOMINIOS_PROPIOS.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
       return callback(null, true);
     }
     callback(new Error(`CORS bloqueado para: ${origin}`));

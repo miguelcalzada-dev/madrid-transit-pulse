@@ -33,8 +33,9 @@ const iniciarSocketServer = (httpServer, TransitAlert, VehicleStatus, dbEvents) 
     cors: {
       origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        const allowed = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003').split(',').map(o => o.trim());
-        if (allowed.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
+        const DOMINIOS_PROPIOS = ['https://miguelcalzada.com', 'https://www.miguelcalzada.com', 'https://miguelcalzada.es', 'https://www.miguelcalzada.es'];
+        const allowed = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://miguelcalzada.com,https://www.miguelcalzada.com,https://miguelcalzada.es,https://www.miguelcalzada.es').split(',').map(o => o.trim());
+        if (allowed.includes(origin) || DOMINIOS_PROPIOS.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
           return callback(null, true);
         }
         callback(new Error(`CORS bloqueado para: ${origin}`));
