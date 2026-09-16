@@ -2,6 +2,7 @@
   "name": "mtp-frontend",
   "version": "1.0.0",
   "private": true,
+  "description": "Madrid Transit Pulse - Frontend Next.js (dashboard, mapa en vivo y estaciones).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -29,5 +30,8 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
