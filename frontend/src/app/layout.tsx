@@ -68,7 +68,12 @@ export default function RootLayout({
         }}>
           Datos provistos por <strong>Renfe Open Data</strong> y <strong>CRTM</strong>. Aplicación no oficial.
         </footer>
-      </body>
+        {/* Cloudflare Web Analytics */}
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={'{"token": "1f517d798f314877860e151bb7b33f83"}'}
+        />      </body>
     </html>
   );
 }
