@@ -34,19 +34,37 @@ const app = express();
 
 app.use(helmet({ contentSecurityPolicy: false }));
 
-const DEFAULT_CORS_ORIGINS = 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://miguelcalzada.com,https://www.miguelcalzada.com,https://miguelcalzada.es,https://www.miguelcalzada.es';
-const allowedOrigins = (process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS).split(',').map(o => o.trim());
+// Origenes permitidos: lista blanca explicita (CORS_ORIGINS separado por comas).
+// IMPORTANTE: no se permiten comodines por subdominio (*.vercel.app, *.railway.app,
+// *.render.com). Cualquiera puede desplegar en esas plataformas y, con
+// credentials: true, llamar a esta API desde un origen ajeno.
+const DOMINIOS_PROPIOS = [
+  'https://miguelcalzada.com',
+  'https://www.miguelcalzada.com',
+  'https://miguelcalzada.es',
+  'https://www.miguelcalzada.es',
+];
 
-const DOMINIOS_PROPIOS = ['https://miguelcalzada.com', 'https://www.miguelcalzada.com', 'https://miguelcalzada.es', 'https://www.miguelcalzada.es'];
+const DEFAULT_CORS_ORIGINS = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+  ...DOMINIOS_PROPIOS,
+].join(',');
+
+const allowedOrigins = new Set(
+  (process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS)
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean),
+);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (curl, Postman, server-to-server)
+    // Peticiones sin Origin (curl, Postman, server-to-server) siempre permitidas.
     if (!origin) return callback(null, true);
-    // Allow *.vercel.app domains and any configured origin
-    if (allowedOrigins.includes(origin) || DOMINIOS_PROPIOS.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
-      return callback(null, true);
-    }
+    if (allowedOrigins.has(origin)) return callback(null, true);
     callback(new Error(`CORS bloqueado para: ${origin}`));
   },
   methods: ['GET', 'POST', 'OPTIONS'],
