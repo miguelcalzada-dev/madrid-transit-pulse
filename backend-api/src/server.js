@@ -53,19 +53,23 @@ const DEFAULT_CORS_ORIGINS = [
   ...DOMINIOS_PROPIOS,
 ].join(',');
 
-const allowedOrigins = new Set(
-  (process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS)
+const allowedOrigins = new Set([
+  // Los dominios propios SIEMPRE estan permitidos, aunque se configure CORS_ORIGINS.
+  ...DOMINIOS_PROPIOS,
+  ...(process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS)
     .split(',')
     .map((o) => o.trim())
     .filter(Boolean),
-);
+]);
 
 app.use(cors({
   origin: (origin, callback) => {
     // Peticiones sin Origin (curl, Postman, server-to-server) siempre permitidas.
     if (!origin) return callback(null, true);
+    // Origen no autorizado: no se anade la cabecera CORS (el navegador bloquea la
+    // respuesta) pero la peticion NO provoca un error 500.
     if (allowedOrigins.has(origin)) return callback(null, true);
-    callback(new Error(`CORS bloqueado para: ${origin}`));
+    return callback(null, false);
   },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
