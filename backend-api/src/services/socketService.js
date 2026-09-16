@@ -6,6 +6,31 @@
 const { Server } = require('socket.io');
 const logger = require('../config/logger');
 
+// Lista blanca explicita de origenes (sin comodines por subdominio).
+// Los dominios propios SIEMPRE estan permitidos, ademas de los de CORS_ORIGINS.
+const DOMINIOS_PROPIOS = [
+  'https://miguelcalzada.com',
+  'https://www.miguelcalzada.com',
+  'https://miguelcalzada.es',
+  'https://www.miguelcalzada.es',
+];
+
+const DEFAULT_CORS_ORIGINS = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+  ...DOMINIOS_PROPIOS,
+].join(',');
+
+const ALLOWED_ORIGINS = new Set([
+  ...DOMINIOS_PROPIOS,
+  ...(process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS)
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean),
+]);
+
 let io               = null;
 let pollingInterval  = null;
 let clientesConectados = 0;
@@ -33,12 +58,10 @@ const iniciarSocketServer = (httpServer, TransitAlert, VehicleStatus, dbEvents) 
     cors: {
       origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        const DOMINIOS_PROPIOS = ['https://miguelcalzada.com', 'https://www.miguelcalzada.com', 'https://miguelcalzada.es', 'https://www.miguelcalzada.es'];
-        const allowed = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://miguelcalzada.com,https://www.miguelcalzada.com,https://miguelcalzada.es,https://www.miguelcalzada.es').split(',').map(o => o.trim());
-        if (allowed.includes(origin) || DOMINIOS_PROPIOS.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.railway.app') || origin.endsWith('.render.com')) {
-          return callback(null, true);
-        }
-        callback(new Error(`CORS bloqueado para: ${origin}`));
+        if (ALLOWED_ORIGINS.has(origin)) return callback(null, true);
+        // Origen no autorizado: se deniega sin lanzar error. Socket.io responde
+        // sin cabeceras CORS y el navegador bloquea la conexion.
+        return callback(null, false);
       },
       methods: ['GET', 'POST'],
       credentials: true,
