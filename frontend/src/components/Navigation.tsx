@@ -59,7 +59,7 @@ export default function Navigation() {
           {navLinks.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
-              <Link
+              <Link prefetch={false}
                 key={href}
                 href={href}
                 className="nav-link-btn"
@@ -128,7 +128,7 @@ export default function Navigation() {
             {navLinks.map(({ href, label, icon: Icon }) => {
               const active = pathname === href;
               return (
-                <Link
+                <Link prefetch={false}
                   key={href}
                   href={href}
                   className="nav-link-btn"
