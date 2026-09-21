@@ -73,7 +73,19 @@ export default function RootLayout({
           defer
           src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon={'{"token": "1f517d798f314877860e151bb7b33f83"}'}
-        />      </body>
+        />
+
+        {/* Volver al portfolio (miguelcalzada.com) */}
+        <a
+          className="mc-home"
+          href="https://miguelcalzada.com/"
+          aria-label="Volver al portfolio de Miguel Calzada"
+        >
+          <span className="mc-home__mark" aria-hidden="true">MC</span>
+          <span className="mc-home__text mc-home__text--long">Volver a miguelcalzada.com</span>
+          <span className="mc-home__text mc-home__text--short">Portfolio</span>
+        </a>
+      </body>
     </html>
   );
 }
