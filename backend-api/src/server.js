@@ -16,6 +16,7 @@ const morgan    = require('morgan');
 const rateLimit = require('express-rate-limit');
 
 const logger = require('./config/logger');
+const ingestion = require('./services/ingestionController');
 
 // ============================================================
 // Determinar modo: real MongoDB vs. simulación en memoria
@@ -104,7 +105,6 @@ const { generarHorarioEstacion: _generarHorarioEstacion } = require('./services/
 
 if (USE_MOCK) {
   const mock = require('./services/mockDb');
-  mock.inicializar();
   TransitAlert  = mock.MockTransitAlert;
   VehicleStatus = mock.MockVehicleStatus;
   dbEvents      = mock.dbEvents;
@@ -118,16 +118,31 @@ if (USE_MOCK) {
   generarHorarioEstacion = _generarHorarioEstacion; // siempre disponible
 }
 
+// ============================================================
+// Workers de ingesta: solo corren mientras hay actividad.
+// Se arrancan al primer cliente y se paran al quedarse sin clientes,
+// de modo que en reposo la app no consume CPU ni red.
+// ============================================================
+ingestion.register({ start: () => gtfsService.start(), stop: () => gtfsService.stop() });
+if (USE_MOCK) {
+  const mock = require('./services/mockDb');
+  ingestion.register({ start: () => mock.start(), stop: () => mock.stop() });
+}
+
 // Inyectar en el contexto de la app para que las rutas lo usen
 app.locals.TransitAlert  = TransitAlert;
 app.locals.VehicleStatus = VehicleStatus;
 
 // Rutas REST
 const buildRoutes = require('./routes/statusRoutes');
-app.use('/api', buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion, gtfsService));
 
-// Inicializar servicio GTFS-RT (asíncrono, no bloquea el arranque)
-gtfsService.inicializar().catch(err => logger.error(`[GTFS] Error en init: ${err.message}`));
+// Cualquier peticion a la API marca actividad y arranca (temporalmente) la
+// ingesta. En tests se omite para mantenerlos hermeticos y sin red.
+if (process.env.NODE_ENV !== 'test') {
+  app.use('/api', (req, res, next) => { ingestion.touch(); next(); });
+}
+
+app.use('/api', buildRoutes(TransitAlert, VehicleStatus, generarHorarioEstacion, gtfsService));
 
 // Ruta raíz
 app.get('/', (req, res) => res.json({
@@ -180,6 +195,7 @@ httpServer.listen(PORT, () => {
 // Graceful shutdown
 const apagar = () => {
   logger.info('🛑 Apagando servidor...');
+  ingestion.stopAll();
   gtfsService.detener();
   detenerSocketServer();
   httpServer.close(() => { logger.info('✅ Apagado limpio'); process.exit(0); });

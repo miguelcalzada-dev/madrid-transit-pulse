@@ -5,6 +5,7 @@
 
 const { Server } = require('socket.io');
 const logger = require('../config/logger');
+const ingestion = require('./ingestionController');
 
 // Lista blanca explicita de origenes (sin comodines por subdominio).
 // Los dominios propios SIEMPRE estan permitidos, ademas de los de CORS_ORIGINS.
@@ -73,6 +74,7 @@ const iniciarSocketServer = (httpServer, TransitAlert, VehicleStatus, dbEvents) 
 
   io.on('connection', (socket) => {
     clientesConectados++;
+    ingestion.clienteConectado();
     logger.info(`🟢 Cliente conectado: ${socket.id} | Total: ${clientesConectados}`);
     enviarEstadoInicial(socket);
 
@@ -89,6 +91,7 @@ const iniciarSocketServer = (httpServer, TransitAlert, VehicleStatus, dbEvents) 
 
     socket.on('disconnect', (reason) => {
       clientesConectados--;
+      ingestion.clienteDesconectado();
       logger.info(`🔴 Cliente desconectado: ${socket.id} (${reason}) | Total: ${clientesConectados}`);
     });
 
@@ -122,8 +125,9 @@ const iniciarSocketServer = (httpServer, TransitAlert, VehicleStatus, dbEvents) 
       logger.debug(`🗺️  ${vehiculos.length} vehículos actualizados emitidos`);
     });
   } else {
-    // Producción: polling clásico
-    iniciarPolling();
+    // Producción: polling clásico. Se registra como worker para que solo
+    // corra mientras haya actividad (clientes conectados).
+    ingestion.register({ start: iniciarPolling, stop: detenerPolling });
   }
 
   logger.info('✅ Servidor Socket.io listo');
@@ -215,8 +219,12 @@ const obtenerStats = async () => {
   };
 };
 
+const detenerPolling = () => {
+  if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+};
+
 const detenerSocketServer = () => {
-  if (pollingInterval) { clearInterval(pollingInterval); }
+  detenerPolling();
   if (io) { io.close(); logger.info('🔒 Socket.io cerrado'); }
 };
 

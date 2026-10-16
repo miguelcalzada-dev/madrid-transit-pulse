@@ -6,7 +6,6 @@
 const { EventEmitter } = require('events');
 const { getPuntoEnRuta, extraerLineaDeDescripcion, clasificarSeveridad, haversineDistance, LINEAS_CERCANIAS } = require('./routeCoords');
 const axios = require('axios');
-const cheerio = require('cheerio');
 const logger = require('../config/logger');
 
 // Configuración de Feeds de Renfe
@@ -124,7 +123,7 @@ const consultarPosicionesRenfe = async () => {
       }
     }
 
-    logger.info(`🚆 [Renfe API] ${trenesActualizados} trenes mapeados, ${trenesBorrados} inactivos purgados`);
+    logger.debug(`🚆 [Renfe API] ${trenesActualizados} trenes mapeados, ${trenesBorrados} inactivos purgados`);
   } catch (err) {
     logger.error(`❌ [Renfe Ingestion] Error posiciones: ${err.message}`);
   }
@@ -181,7 +180,7 @@ const consultarAlertasRenfe = async () => {
     if (nuevasAlertas.length > 0) {
       alertas = [...nuevasAlertas, ...alertas.filter(a => a.source !== 'RENFE')].slice(0, 200);
       dbEvents.emit('nuevas_alertas', nuevasAlertas);
-      logger.info(`📢 [Renfe API] ${nuevasAlertas.length} incidencias únicas activas procesadas`);
+      logger.debug(`📢 [Renfe API] ${nuevasAlertas.length} incidencias únicas activas procesadas`);
     }
   } catch (err) {
     logger.error(`❌ [Renfe Ingestion] Error alertas: ${err.message}`);
@@ -190,35 +189,50 @@ const consultarAlertasRenfe = async () => {
 
 
 // ============================================================
-// INICIALIZACIÓN
+// CICLO DE VIDA (start/stop segun actividad de clientes)
 // ============================================================
-const inicializar = async () => {
-  logger.info('🗃️  [MockDB] Inicializando integraciones en tiempo real (Renfe GTFS-RT)...');
+let _timers = [];
+let _started = false;
 
-  // Loops principales
+// Arranca la ingesta: fetch inmediato + intervalos periodicos.
+const start = () => {
+  if (_started) return;
+  _started = true;
+  logger.info('🗃️  [MockDB] Iniciando integraciones en tiempo real (Renfe GTFS-RT)...');
+
   consultarPosicionesRenfe();
   consultarAlertasRenfe();
 
-  setInterval(() => consultarPosicionesRenfe(), 25000);
-  setInterval(() => consultarAlertasRenfe(), 60000);
-  setInterval(() => {
-    dbEvents.emit('vehiculos_actualizados', [...vehiculos.values()]);
-  }, 10000);
-
-  // Garbage Collector: Limpiar trenes que no emiten desde hace más de 30 mins
-  setInterval(() => {
-    const cutoff = Date.now() - 30 * 60 * 1000;
-    let eliminados = 0;
-    for (const [id, v] of vehiculos.entries()) {
-      if (new Date(v.lastSeenAt).getTime() < cutoff) {
-        vehiculos.delete(id);
-        eliminados++;
+  _timers = [
+    setInterval(() => consultarPosicionesRenfe(), 25000),
+    setInterval(() => consultarAlertasRenfe(), 60000),
+    setInterval(() => {
+      dbEvents.emit('vehiculos_actualizados', [...vehiculos.values()]);
+    }, 10000),
+    // Garbage Collector: limpiar trenes que no emiten desde hace mas de 30 mins
+    setInterval(() => {
+      const cutoff = Date.now() - 30 * 60 * 1000;
+      let eliminados = 0;
+      for (const [id, v] of vehiculos.entries()) {
+        if (new Date(v.lastSeenAt).getTime() < cutoff) {
+          vehiculos.delete(id);
+          eliminados++;
+        }
       }
-    }
-    if (eliminados > 0) {
-      logger.info(`🧹 [Garbage Collector] Eliminados ${eliminados} trenes inactivos (>30 mins) de la memoria`);
-    }
-  }, 60000);
+      if (eliminados > 0) {
+        logger.debug(`🧹 [Garbage Collector] Eliminados ${eliminados} trenes inactivos (>30 mins)`);
+      }
+    }, 60000),
+  ];
+};
+
+// Detiene la ingesta y limpia los intervalos (sin perder los datos en memoria).
+const stop = () => {
+  if (!_started) return;
+  _started = false;
+  _timers.forEach(clearInterval);
+  _timers = [];
+  logger.info('💤 [MockDB] Ingesta detenida (sin clientes)');
 };
 
 // ============================================================
@@ -391,4 +405,4 @@ const generarHorarioEstacion = (lineas = []) => {
   return llegadas.sort((a, b) => a.realTime - b.realTime).slice(0, 20); // Top 20 llegadas
 };
 
-module.exports = { MockTransitAlert, MockVehicleStatus, dbEvents, inicializar, generarHorarioEstacion };
+module.exports = { MockTransitAlert, MockVehicleStatus, dbEvents, start, stop, inicializar: start, generarHorarioEstacion };
