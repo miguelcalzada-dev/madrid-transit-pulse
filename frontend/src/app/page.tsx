@@ -87,36 +87,29 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="dashboard-header">
         <div>
-          <h1 className="dashboard-title" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em', lineHeight: 1 }}>
+          <h1 className="dashboard-title">
             Centro de Control
           </h1>
-          <p className="dashboard-subtitle" style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>
+          <p className="dashboard-subtitle">
             Monitorización en tiempo real — Red Cercanías Madrid
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="dashboard-header__meta">
           {lastUpdate && (
-            <span style={{ fontSize: '0.65rem', color: '#94a3b8', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '0.2rem 0.5rem', borderRadius: 5 }}>
+            <span className="mtp-timestamp">
               Actualizado: {lastUpdate}
             </span>
           )}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '0.35rem',
-            padding: '0.3rem 0.7rem', borderRadius: '999px',
-            background: conectado ? '#f0fdf4' : '#fef2f2',
-            border: `1px solid ${conectado ? '#bbf7d0' : '#fecaca'}`,
-            fontSize: '0.68rem', fontWeight: 700,
-            color: conectado ? '#15803d' : '#dc2626',
-          }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', animation: 'pulse-dot 2s infinite' }} />
-            {conectado ? 'TELEMETRÍA EN VIVO' : 'SIN CONEXIÓN'}
+          <div className={`mtp-connection-badge ${conectado ? 'mtp-connected' : 'mtp-disconnected'}`}>
+            <span className="mtp-connection-dot" />
+            {conectado ? 'Telemetría en vivo' : 'Sin conexión'}
           </div>
         </div>
       </div>
 
       {/* Error banner */}
       {error && (
-        <div className="mtp-error-banner" style={{ marginBottom: '1rem', borderRadius: 8 }}>
+        <div className="mtp-error-banner" style={{ marginBottom: '1rem' }}>
           <AlertTriangle size={16} /> {error}
         </div>
       )}
@@ -163,7 +156,7 @@ export default function DashboardPage() {
       <TrainDataGrid vehiculos={vehiculos} lineFilter={lineFilter} />
 
       {/* Footer */}
-      <div style={{ fontSize: '0.6rem', color: '#cbd5e1', textAlign: 'center', padding: '0.75rem 0', borderTop: '1px solid #f1f5f9', marginTop: '0.5rem' }}>
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-dim)', textAlign: 'center', padding: '0.85rem 0', borderTop: '2px solid var(--border-main)', marginTop: '0.75rem' }}>
         Madrid Transit Pulse · Datos: Renfe Cercanías GTFS-RT · Actualización cada 25s
       </div>
     </main>

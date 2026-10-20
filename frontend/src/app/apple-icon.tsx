@@ -14,11 +14,10 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#dc2626',
-          borderRadius: '40px',
+          background: '#111111',
         }}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ff3e00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect width="16" height="16" x="4" y="3" rx="2" />
           <path d="M4 11h16" />
           <path d="M12 3v8" />

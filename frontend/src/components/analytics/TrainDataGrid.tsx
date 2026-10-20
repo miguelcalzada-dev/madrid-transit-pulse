@@ -64,13 +64,13 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
     <div className="train-grid">
       <div className="train-grid__header">
         <div className="train-grid__title">
-          🚆 Trenes activos
-          <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 400 }}>
+          Trenes activos
+          <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontWeight: 400 }}>
             — {filtered.length} de {vehiculos.length}
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Search size={12} color="#94a3b8" style={{ position: 'absolute', marginLeft: '8px', pointerEvents: 'none' }} />
+          <Search size={12} color="#111111" style={{ position: 'absolute', marginLeft: '8px', pointerEvents: 'none' }} />
           <input
             className="train-grid__search"
             style={{ paddingLeft: '1.6rem' }}
@@ -99,28 +99,28 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
               const hasAlert = v.tieneAlerta;
               return (
                 <tr key={v.vehicleId}>
-                  <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.62rem', color: hasAlert ? '#dc2626' : '#0f172a' }}>
+                  <td style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: hasAlert ? '#e60000' : '#111111' }}>
                     {hasAlert && '⚠ '}{v.vehicleId}
                   </td>
                   <td>
-                    <span className="line-badge" style={{ background: lc.bg, color: lc.text, borderColor: lc.border }}>
+                    <span className="line-badge" style={{ background: lc.bg, color: lc.text, borderColor: '#111111' }}>
                       {v.lineId}
                     </span>
                   </td>
                   <td>
                     <span className={`status-badge ${st.cls}`}>{st.label}</span>
                   </td>
-                  <td style={{ color: (v.delaySeconds || 0) > 60 ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
+                  <td style={{ fontFamily: "'Space Mono', monospace", color: (v.delaySeconds || 0) > 60 ? '#e60000' : '#007a3d', fontWeight: 700 }}>
                     {v.delaySeconds ? `+${Math.floor(v.delaySeconds / 60)}m` : '✓ A tiempo'}
                   </td>
-                  <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.6rem', color: '#94a3b8' }}>
+                  <td style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: '#555555' }}>
                     {v.latitude && v.longitude ? `${v.latitude.toFixed(4)}, ${v.longitude.toFixed(4)}` : '—'}
                   </td>
                 </tr>
               );
             })}
             {visible.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>Sin resultados</td></tr>
+              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sin resultados</td></tr>
             )}
           </tbody>
         </table>
@@ -128,8 +128,8 @@ export default function TrainDataGrid({ vehiculos, lineFilter }: TrainDataGridPr
 
       {/* Paginación */}
       {totalPages > 1 && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1rem', borderTop: '1px solid #f1f5f9' }}>
-          <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Página {page} de {totalPages}</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1rem', borderTop: '2px solid #111111' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-muted)' }}>Página {page} de {totalPages}</span>
           <div style={{ display: 'flex', gap: '0.3rem' }}>
             <button className="mtp-page-btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Anterior</button>
             <button className="mtp-page-btn" disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>Siguiente →</button>

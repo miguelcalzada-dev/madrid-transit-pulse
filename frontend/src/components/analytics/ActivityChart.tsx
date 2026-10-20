@@ -15,79 +15,80 @@ interface ActivityChartProps {
 export default function ActivityChart({ history }: ActivityChartProps) {
   const tooltipStyle = {
     contentStyle: {
-      background: '#fff',
-      border: '1px solid #e2e8f0',
-      borderRadius: '8px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.07)',
-      fontSize: '0.72rem',
-      color: '#0f172a',
+      background: '#ffffff',
+      border: '3px solid #111111',
+      borderRadius: 0,
+      boxShadow: '4px 4px 0 #111111',
+      fontSize: '0.7rem',
+      fontFamily: "'Space Mono', monospace",
+      color: '#111111',
     },
-    labelStyle: { color: '#64748b', fontWeight: 600, fontSize: '0.65rem', marginBottom: '0.2rem' },
-    cursor: { stroke: '#e2e8f0', strokeWidth: 1 },
+    labelStyle: { color: '#555555', fontWeight: 700, fontSize: '0.62rem', marginBottom: '0.2rem', textTransform: 'uppercase' as const },
+    cursor: { stroke: '#111111', strokeWidth: 1 },
   };
 
   return (
     <div className="chart-card" style={{ height: '100%' }}>
       <div className="chart-card__header">
-        <div className="chart-card__title">📈 Actividad en tiempo real</div>
+        <div className="chart-card__title">Actividad en tiempo real</div>
         <span className="chart-card__badge">Últimos 100 ciclos</span>
       </div>
 
       {history.length < 2 ? (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200, flexDirection: 'column', gap: '0.5rem' }}>
           <div className="mtp-map-loading-spinner" />
-          <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Acumulando datos...</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Acumulando datos...</span>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={220}>
           <AreaChart data={history} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="gradTrenes" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#2563eb" stopOpacity={0.15} />
-                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#ff3e00" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#ff3e00" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="gradAlertas" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#dc2626" stopOpacity={0.15} />
-                <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#111111" stopOpacity={0.12} />
+                <stop offset="95%" stopColor="#111111" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" vertical={false} />
+            <CartesianGrid strokeDasharray="2 4" stroke="#d8d4cb" vertical={false} />
             <XAxis
               dataKey="time"
-              tick={{ fontSize: 10, fill: '#94a3b8' }}
+              tick={{ fontSize: 10, fill: '#555555', fontFamily: "'Space Mono', monospace" }}
               axisLine={false}
               tickLine={false}
               interval="preserveStartEnd"
             />
             <YAxis
-              tick={{ fontSize: 10, fill: '#94a3b8' }}
+              tick={{ fontSize: 10, fill: '#555555', fontFamily: "'Space Mono', monospace" }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip {...tooltipStyle} />
             <Legend
-              wrapperStyle={{ fontSize: '0.68rem', color: '#475569', paddingTop: '0.5rem' }}
+              wrapperStyle={{ fontSize: '0.6rem', fontFamily: "'Space Mono', monospace", color: '#333333', paddingTop: '0.5rem', textTransform: 'uppercase' }}
               formatter={(value) => value === 'trenes' ? 'Trenes activos' : 'Alertas activas'}
             />
             <Area
               type="monotone"
               dataKey="trenes"
               name="trenes"
-              stroke="#2563eb"
-              strokeWidth={2}
+              stroke="#ff3e00"
+              strokeWidth={2.5}
               fill="url(#gradTrenes)"
               dot={false}
-              activeDot={{ r: 4, strokeWidth: 0, fill: '#2563eb' }}
+              activeDot={{ r: 4, strokeWidth: 1, stroke: '#111111', fill: '#ff3e00' }}
             />
             <Area
               type="monotone"
               dataKey="alertas"
               name="alertas"
-              stroke="#dc2626"
+              stroke="#111111"
               strokeWidth={2}
               fill="url(#gradAlertas)"
               dot={false}
-              activeDot={{ r: 4, strokeWidth: 0, fill: '#dc2626' }}
+              activeDot={{ r: 4, strokeWidth: 1, stroke: '#111111', fill: '#ffffff' }}
             />
           </AreaChart>
         </ResponsiveContainer>

@@ -43,11 +43,11 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
 
   const tooltipStyle = {
     contentStyle: {
-      background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.07)', fontSize: '0.72rem', color: '#0f172a',
+      background: '#ffffff', border: '3px solid #111111', borderRadius: 0,
+      boxShadow: '4px 4px 0 #111111', fontSize: '0.7rem', fontFamily: "'Space Mono', monospace", color: '#111111',
     },
-    labelStyle: { color: '#475569', fontWeight: 600, marginBottom: '0.2rem' },
-    cursor: { fill: '#f8fafc' },
+    labelStyle: { color: '#555555', fontWeight: 700, marginBottom: '0.2rem', textTransform: 'uppercase' as const },
+    cursor: { fill: '#ffe3d9' },
   };
 
   return (
@@ -55,17 +55,17 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
       {/* Trenes por línea */}
       <div className="chart-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="chart-card__header">
-          <div className="chart-card__title">🚆 Trenes activos por línea</div>
+          <div className="chart-card__title">Trenes activos por línea</div>
           <span className="chart-card__badge">En tiempo real</span>
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={trenesPorLinea} margin={{ top: 12, right: 8, left: -20, bottom: 4 }}
             onClick={(d: any) => d?.activePayload && onLineClick(d.activePayload[0]?.payload?.linea)}>
-            <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="linea" tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+            <CartesianGrid strokeDasharray="2 4" stroke="#d8d4cb" vertical={false} />
+            <XAxis dataKey="linea" tick={{ fontSize: 11, fill: '#111111', fontWeight: 700, fontFamily: "'Space Mono', monospace" }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: '#555555', fontFamily: "'Space Mono', monospace" }} axisLine={false} tickLine={false} />
             <Tooltip {...tooltipStyle} formatter={(v: any) => [`${v} trenes`, 'Activos']} />
-            <Bar dataKey="trenes" radius={[4, 4, 0, 0]} cursor="pointer">
+            <Bar dataKey="trenes" radius={[0, 0, 0, 0]} cursor="pointer">
               {trenesPorLinea.map(d => (
                 <Cell key={d.linea}
                   fill={d.linea === activeFilter ? d.color : `${d.color}90`}
@@ -73,11 +73,11 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
                   strokeWidth={2}
                 />
               ))}
-              <LabelList dataKey="trenes" position="top" style={{ fontSize: 10, fill: '#475569', fontWeight: 600 }} />
+              <LabelList dataKey="trenes" position="top" style={{ fontSize: 10, fill: '#111111', fontWeight: 700, fontFamily: "'Space Mono', monospace" }} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        <div style={{ fontSize: '0.6rem', color: '#94a3b8', textAlign: 'center', marginTop: 'auto', paddingTop: '0.5rem' }}>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-dim)', textAlign: 'center', marginTop: 'auto', paddingTop: '0.5rem' }}>
           Clic en una barra para filtrar · Total: {vehiculos.length} trenes
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
       {/* Alertas por línea */}
       <div className="chart-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="chart-card__header">
-          <div className="chart-card__title">⚠️ Incidencias por línea</div>
+          <div className="chart-card__title">Incidencias por línea</div>
           <span className="chart-card__badge">
             {alertasPorLinea.reduce((acc, curr) => acc + curr.count, 0)} específicas
           </span>
@@ -95,21 +95,21 @@ export default function LineBarChart({ vehiculos, alertas, activeFilter, onLineC
           {alertasPorLinea.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={alertasPorLinea} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="linea" tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }} axisLine={false} tickLine={false} width={30} />
+                <CartesianGrid strokeDasharray="2 4" stroke="#d8d4cb" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: '#555555', fontFamily: "'Space Mono', monospace" }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="linea" tick={{ fontSize: 11, fill: '#111111', fontWeight: 700, fontFamily: "'Space Mono', monospace" }} axisLine={false} tickLine={false} width={30} />
                 <Tooltip {...tooltipStyle} formatter={(v: any) => [`${v} incidencias`, 'Alertas']} />
-                <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
+                <Bar dataKey="count" radius={[0, 0, 0, 0]} barSize={20}>
                   {alertasPorLinea.map(d => (
-                    <Cell key={d.linea} fill={d.color} fillOpacity={0.8} />
+                    <Cell key={d.linea} fill={d.color} fillOpacity={1} stroke="#111111" strokeWidth={1} />
                   ))}
-                  <LabelList dataKey="count" position="right" style={{ fontSize: 10, fill: '#475569', fontWeight: 600 }} />
+                  <LabelList dataKey="count" position="right" style={{ fontSize: 10, fill: '#111111', fontWeight: 700, fontFamily: "'Space Mono', monospace" }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           ) : (
-             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.75rem', flexDirection: 'column', gap: '0.5rem' }}>
-                <div style={{ fontSize: '1.5rem' }}>✅</div>
+             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.04em', fontSize: '0.62rem', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ fontSize: '1.3rem' }}>✓</div>
                 Líneas operativas
              </div>
           )}

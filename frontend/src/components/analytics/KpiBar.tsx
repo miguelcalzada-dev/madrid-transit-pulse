@@ -26,28 +26,28 @@ export default function KpiBar({ vehiculos, alertas, stats, conectado, lineFilte
       value: filtered.length,
       sub: lineFilter === 'ALL' ? 'Todas las líneas' : `Línea ${lineFilter}`,
       icon: Train,
-      accent: '#2563eb',
+      accent: '#ff3e00',
     },
     {
       label: 'Incidencias activas',
       value: filteredAlerts.length,
       sub: `${filteredAlerts.filter(a => a.severity === 'ALTA').length} alta severidad`,
       icon: AlertTriangle,
-      accent: filteredAlerts.length > 10 ? '#dc2626' : filteredAlerts.length > 5 ? '#d97706' : '#16a34a',
+      accent: filteredAlerts.length > 10 ? '#e60000' : filteredAlerts.length > 5 ? '#b86e00' : '#007a3d',
     },
     {
       label: 'En ruta',
       value: `${pctEnRuta}%`,
       sub: `${enRuta} de ${filtered.length} trenes`,
       icon: Activity,
-      accent: parseInt(pctEnRuta) > 70 ? '#16a34a' : '#d97706',
+      accent: parseInt(pctEnRuta) > 70 ? '#007a3d' : '#b86e00',
     },
     {
       label: 'Con retraso',
       value: filtered.filter(v => (v.delaySeconds || 0) > 60).length,
       sub: `${filtered.filter(v => (v.delaySeconds || 0) > 180).length} retrasos graves`,
       icon: Clock,
-      accent: '#dc2626',
+      accent: '#e60000',
     },
   ];
 

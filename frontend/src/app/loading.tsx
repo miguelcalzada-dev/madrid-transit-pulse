@@ -3,10 +3,16 @@ export default function Loading() {
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       justifyContent: 'center', height: '100%', gap: '1rem',
-      padding: '2rem', color: '#94a3b8',
+      padding: '2rem', color: 'var(--text-muted)',
     }}>
       <div className="mtp-map-loading-spinner" />
-      <p style={{ fontSize: '0.8rem', fontWeight: 500 }}>Cargando...</p>
+      <p style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.65rem',
+        fontWeight: 700,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+      }}>Cargando...</p>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#ffffff',
+  themeColor: '#eae8e3',
 };
 
 import Navigation from '@/components/Navigation';
@@ -35,11 +35,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        {/* Fuentes de Google: Inter para UI y JetBrains Mono para IDs/códigos */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
           rel="stylesheet"
         />
         {/* Leaflet CSS */}
@@ -50,24 +49,17 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', margin: 0, overflow: 'hidden' }}>
-        <ConsoleSuppressor />
-        <Navigation />
-        <div style={{ flex: 1, overflow: 'hidden', paddingTop: '56px' }}>
-          {children}
+      <body>
+        <div className="mtp-shell">
+          <ConsoleSuppressor />
+          <Navigation />
+          <div className="mtp-shell__main">
+            {children}
+          </div>
+          <footer className="mtp-shell__footer">
+            Datos provistos por <strong>Renfe Open Data</strong> y <strong>CRTM</strong>. Aplicación no oficial.
+          </footer>
         </div>
-        <footer style={{
-          fontSize: '0.55rem',
-          color: '#94a3b8',
-          textAlign: 'center',
-          padding: '0.3rem 0.5rem',
-          background: '#f8fafc',
-          borderTop: '1px solid #e2e8f0',
-          flexShrink: 0,
-          zIndex: 9000,
-        }}>
-          Datos provistos por <strong>Renfe Open Data</strong> y <strong>CRTM</strong>. Aplicación no oficial.
-        </footer>
 
         {/* Volver al portfolio (miguelcalzada.com) */}
         <a

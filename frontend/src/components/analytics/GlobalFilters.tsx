@@ -25,8 +25,8 @@ export default function GlobalFilters({ activeFilter, onFilterChange, trainsPerL
           onClick={() => { onFilterChange('ALL'); setIsOpen(false); }}
           style={isMobileGrid ? { gridColumn: '1 / -1' } : {}}
         >
-          🚆 Todas las líneas
-          <span style={{ background: 'rgba(0,0,0,0.12)', borderRadius: '999px', padding: '0 0.3rem', fontSize: '0.58rem' }}>
+          Todas
+          <span className="chip-count">
             {totalTrains}
           </span>
         </button>
@@ -46,27 +46,22 @@ export default function GlobalFilters({ activeFilter, onFilterChange, trainsPerL
                 color: lc.text,
               } : {
                 background: lc.text,
-                borderColor: lc.text,
+                borderColor: '#111111',
                 color: '#fff',
-                boxShadow: `0 1px 3px ${lc.text}40`,
+                boxShadow: '3px 3px 0 #111111',
               }}
               onClick={() => { onFilterChange(lineId); setIsOpen(false); }}
             >
               {lineId}
-              <span style={{
-                background: 'rgba(0,0,0,0.12)',
-                borderRadius: '999px',
-                padding: '0 0.3rem',
-                fontSize: '0.58rem',
-              }}>
+              <span className="chip-count">
                 {trainCount}
               </span>
               {alertCount > 0 && (
                 <span style={{
-                  background: '#dc2626',
-                  color: '#fff',
-                  borderRadius: '999px',
-                  padding: '0 0.3rem',
+                  background: '#ffffff',
+                  color: '#e60000',
+                  border: '1px solid currentColor',
+                  padding: '0 0.28rem',
                   fontSize: '0.55rem',
                   fontWeight: 700,
                   marginLeft: '0.1rem',
@@ -93,10 +88,10 @@ export default function GlobalFilters({ activeFilter, onFilterChange, trainsPerL
       <div className="mobile-only">
         <button className="mobile-filter-btn" onClick={() => setIsOpen(true)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Filter size={18} color="#475569" />
+            <Filter size={18} />
             <span>Filtro de Líneas</span>
           </div>
-          <span style={{ color: '#2563eb' }}>
+          <span style={{ color: 'var(--accent-primary)' }}>
             {activeFilter === 'ALL' ? 'Todas' : activeFilter}
           </span>
         </button>
@@ -108,12 +103,13 @@ export default function GlobalFilters({ activeFilter, onFilterChange, trainsPerL
           <div className="mobile-filter-sheet-bg" onClick={() => setIsOpen(false)} />
           <div className="mobile-filter-sheet">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>Seleccionar Línea</span>
-              <button 
-                style={{ background: '#f1f5f9', border: 'none', borderRadius: '50%', padding: '0.5rem', display: 'flex' }}
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', textTransform: 'uppercase' }}>Seleccionar Línea</span>
+              <button
+                className="mtp-icon-btn"
+                aria-label="Cerrar filtros"
                 onClick={() => setIsOpen(false)}
               >
-                <X size={20} color="#475569" />
+                <X size={18} />
               </button>
             </div>
             <div className="mobile-filter-sheet-grid">
