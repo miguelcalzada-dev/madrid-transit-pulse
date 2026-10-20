@@ -14,7 +14,8 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#111111',
+          background: '#f4f3f0',
+          border: '8px solid #111111',
         }}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ff3e00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

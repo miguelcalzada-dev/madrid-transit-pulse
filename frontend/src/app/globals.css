@@ -192,7 +192,7 @@ button, input, select, textarea { font-family: inherit; }
   height: 36px;
   display: grid;
   place-items: center;
-  background: var(--border-main);
+  background: var(--bg-card);
   border: 2px solid var(--border-main);
   box-shadow: var(--shadow-brutal-sm);
   color: var(--accent-primary);
