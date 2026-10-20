@@ -110,7 +110,7 @@ button, input, select, textarea { font-family: inherit; }
 
 /* Scrollbars editoriales */
 ::-webkit-scrollbar { width: 12px; height: 12px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); border-left: 2px solid var(--border-main); }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border-main); border: 3px solid var(--bg-primary); }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
@@ -128,10 +128,9 @@ button, input, select, textarea { font-family: inherit; }
 .mtp-shell__main {
   flex: 1;
   overflow: hidden;
-  padding-top: var(--header-h);
   width: 100%;
   max-width: 1560px;
-  margin: 0 auto;
+  margin: var(--header-h) auto 0;
   border-left: 4px solid var(--border-main);
   border-right: 4px solid var(--border-main);
   background: var(--bg-primary);
@@ -175,8 +174,6 @@ button, input, select, textarea { font-family: inherit; }
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-left: 4px solid var(--border-main);
-  border-right: 4px solid var(--border-main);
 }
 
 .mtp-brand {

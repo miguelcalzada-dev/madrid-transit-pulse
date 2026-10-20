@@ -20,17 +20,17 @@ export default function Navigation() {
   return (
     <>
       <header className="mtp-navbar">
-        <nav className="mtp-navbar__inner" aria-label="NavegaciÃ³n principal">
+        <nav className="mtp-navbar__inner" aria-label="Navegación principal">
           {/* Brand */}
-          <Link prefetch={false} href="/" className="mtp-brand" aria-label="CercanÃ­as Madrid, inicio">
+          <Link prefetch={false} href="/" className="mtp-brand" aria-label="Cercanías Madrid, inicio">
             <span className="mtp-brand__mark">
               <Train size={18} strokeWidth={2.5} />
             </span>
             <span>
               <span className="mtp-brand__title">
-                CercanÃ­as<span>.</span>
+                Cercanías<span>.</span>
               </span>
-              <span className="mtp-brand__sub">Madrid Â· Monitor en tiempo real</span>
+              <span className="mtp-brand__sub">Madrid · Monitor en tiempo real</span>
             </span>
           </Link>
 
@@ -66,7 +66,7 @@ export default function Navigation() {
             <button
               type="button"
               className="mtp-nav-toggle"
-              aria-label="Abrir menÃº de navegaciÃ³n"
+              aria-label="Abrir menú de navegación"
               onClick={() => setIsOpen(true)}
             >
               <Menu size={20} />
@@ -85,13 +85,13 @@ export default function Navigation() {
               </span>
               <div>
                 <div className="mtp-brand__title" style={{ fontSize: '1.4rem' }}>
-                  CercanÃ­as<span>.</span>
+                  Cercanías<span>.</span>
                 </div>
-                <div className="mtp-brand__sub">Madrid Â· Monitor en tiempo real</div>
+                <div className="mtp-brand__sub">Madrid · Monitor en tiempo real</div>
               </div>
             </div>
             <button
-              aria-label="Cerrar menÃº de navegaciÃ³n"
+              aria-label="Cerrar menú de navegación"
               className="mtp-icon-btn"
               onClick={() => setIsOpen(false)}
             >
@@ -131,4 +131,3 @@ export default function Navigation() {
     </>
   );
 }
-
